@@ -1,47 +1,393 @@
-<!doctype html><html lang="de"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#285743"><link rel="manifest" href="manifest.json">
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Meine Bergtouren</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f2f6f3;color:#20352b;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
-header{color:#fff;padding:28px 18px 34px;background:linear-gradient(135deg,#214d3b,#748d76);border-radius:0 0 28px 28px}
-main{max-width:900px;margin:auto;padding:16px}h1{margin:0;font-size:28px}.sub{opacity:.86}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:-7px}.stat,.card,.sheet{background:#fff;border-radius:18px;padding:15px;box-shadow:0 3px 16px #0001}.stat b{display:block;font-size:22px}.stat small{color:#6b786f}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:17px 0}.btn{border:0;border-radius:12px;padding:11px 14px;background:#2d654f;color:#fff;font-weight:700}.btn.alt{background:#e5ede8;color:#2d4b3e}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
-.card img{width:100%;height:155px;object-fit:cover;border-radius:12px;margin-bottom:10px}.card h3{margin:7px 0}.meta{font-size:13px;color:#6b786f;margin:7px 0}.badge{display:inline-block;border-radius:99px;padding:5px 9px;background:#e7f1eb;color:#286044;font-size:12px;font-weight:700}.stars{letter-spacing:2px}
-.empty{text-align:center;color:#728077;padding:35px}.modal{display:none;position:fixed;inset:0;background:#0008;align-items:center;justify-content:center;padding:14px}.modal.open{display:flex}.sheet{width:100%;max-width:550px;max-height:92vh;overflow:auto}
-label{display:block;font-size:13px;font-weight:700;margin:11px 0 5px}input,textarea,select{width:100%;padding:11px;border:1px solid #cbd7d0;border-radius:10px;font:inherit}textarea{min-height:85px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.photoGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}.photoGrid img{width:100%;height:90px;object-fit:cover;border-radius:8px}.close{float:right}
-@media(max-width:500px){.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:span 2}.row{grid-template-columns:1fr}}
-</style></head><body>
-<header><h1>🏔️ Meine Bergtouren</h1><div class="sub">Meine persönlichen Bergtouren</div></header>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f3f6f3;color:#20342b}
+header{padding:28px 20px 34px;color:#fff;background:linear-gradient(135deg,#204c3b,#718a73);border-radius:0 0 28px 28px}
+main{max-width:900px;margin:auto;padding:18px}
+h1{margin:0 0 5px;font-size:29px}
+.muted{opacity:.85}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:-8px}
+.stat,.card,.modalbox{background:#fff;border-radius:18px;padding:16px;box-shadow:0 3px 16px #0001}
+.stat b{font-size:22px;display:block}
+.stat small{color:#718078}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}
+.btn{border:0;border-radius:12px;padding:11px 15px;background:#2f6751;color:#fff;font-weight:700;cursor:pointer}
+.btn.alt{background:#e4ece7;color:#2d4b3d}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+.card img{width:100%;height:180px;object-fit:cover;border-radius:12px;margin-bottom:10px}
+.card h3{margin:8px 0 5px}
+.meta{font-size:13px;color:#66756c;margin:7px 0}
+.badge{display:inline-block;border-radius:99px;padding:5px 9px;background:#e7f1eb;color:#286044;font-size:12px;font-weight:700}
+.card p{line-height:1.45}
+.empty{text-align:center;padding:35px;color:#738078}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.modalbox{max-width:540px;width:100%;max-height:92vh;overflow:auto}
+.close{float:right}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-weight:700;font-size:13px;margin:12px 0 5px}
+input,textarea,select{width:100%;padding:11px;border:1px solid #ccd6d0;border-radius:10px;font:inherit}
+textarea{min-height:85px}
+.link{color:#2f6751;font-weight:700}
+.info{background:#f0f5f1;border-radius:12px;padding:10px;margin:10px 0}
+@media(max-width:520px){
+.stats{grid-template-columns:1fr 1fr}
+.stat:last-child{grid-column:span 2}
+.row{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🏔️ Meine Bergtouren</h1>
+<div class="muted">Deine persönliche Sammlung von Touren</div>
+</header>
+
 <main>
-<div class="stats"><div class="stat"><b id="p">0</b><small>Geplant</small></div><div class="stat"><b id="d">0</b><small>Erledigt</small></div><div class="stat"><b id="h">0</b><small>Höhenmeter</small></div></div>
-<div class="toolbar"><button class="btn" onclick="newTour()">＋ Tour hinzufügen</button><button class="btn alt" onclick="filter='all';render()">Alle</button><button class="btn alt" onclick="filter='planned';render()">Geplant</button><button class="btn alt" onclick="filter='done';render()">Erledigt</button></div>
-<div id="list" class="grid"></div></main>
-<div id="modal" class="modal"><div class="sheet"><button class="btn alt close" onclick="closeModal()">Schließen</button><h2 id="formTitle">Neue Tour</h2>
-<form id="form"><input id="id" type="hidden">
-<label>Titel *</label><input id="title" required>
-<label>Beschreibung</label><textarea id="desc"></textarea>
-<label>Outdooractive-Link</label><input id="oa" type="url" placeholder="https://www.outdooractive.com/...">
-<div class="row"><div><label>Kilometer</label><input id="km" type="number" step=".1"></div><div><label>Höhenmeter</label><input id="elev" type="number"></div></div>
-<div class="row"><div><label>Gehzeit</label><input id="time" placeholder="4:30 h"></div><div><label>Schwierigkeit</label><select id="difficulty"><option>leicht</option><option selected>mittel</option><option>schwer</option></select></div></div>
-<label>Bewertung</label><select id="rating"><option value="0">Noch nicht bewertet</option><option value="1">⭐</option><option value="2">⭐⭐</option><option value="3">⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option><option value="5">⭐⭐⭐⭐⭐</option></select>
-<label>Fotos</label><input id="photos" type="file" accept="image/*" multiple>
-<label>Status</label><select id="status"><option value="planned">🥾 Geplant</option><option value="done">✅ Gegangen</option></select>
-<label>Begehungsdatum</label><input id="date" type="date">
-<label>Notizen</label><textarea id="notes"></textarea><br>
-<button class="btn" type="submit">Speichern</button></form></div></div>
+
+<div class="stats">
+<div class="stat"><b id="planned">0</b><small>Geplant</small></div>
+<div class="stat"><b id="done">0</b><small>Erledigt</small></div>
+<div class="stat"><b id="hm">0</b><small>Höhenmeter gesamt</small></div>
+</div>
+
+<div class="toolbar">
+<button class="btn" onclick="openModal()">＋ Tour hinzufügen</button>
+<button class="btn alt" onclick="filter='all';render()">Alle</button>
+<button class="btn alt" onclick="filter='planned';render()">Geplant</button>
+<button class="btn alt" onclick="filter='done';render()">Erledigt</button>
+</div>
+
+<div id="list" class="grid"></div>
+
+</main>
+
+<div id="modal" class="modal">
+<div class="modalbox">
+
+<button class="btn alt close" onclick="closeModal()">Schließen</button>
+
+<h2>Neue Bergtour</h2>
+
+<form id="form">
+
+<label>Berg / Tour *</label>
+<input id="title" required placeholder="z. B. Hochstaufen">
+
+<label>Titelbild</label>
+<input id="cover" type="file" accept="image/*">
+
+<label>Ort des Berges</label>
+<input id="place" placeholder="z. B. Ramsau bei Berchtesgaden">
+
+<div class="row">
+<div>
+<label>Fahrzeit</label>
+<input id="drive" placeholder="z. B. 35 Min.">
+</div>
+
+<div>
+<label>HM zum Gehen</label>
+<input id="elev" type="number" placeholder="z. B. 850">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>Gesamthöhenmeter vom Berg</label>
+<input id="totalElev" type="number" placeholder="z. B. 1350">
+</div>
+
+<div>
+<label>Gehzeit</label>
+<input id="time" placeholder="z. B. 5:30 h">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>Entfernung (km)</label>
+<input id="km" type="number" step=".1">
+</div>
+
+<div>
+<label>Schwierigkeit</label>
+<select id="difficulty">
+<option>leicht</option>
+<option selected>mittel</option>
+<option>schwer</option>
+</select>
+</div>
+</div>
+
+<label>Outdooractive-Link</label>
+<input id="oa" type="url" placeholder="https://www.outdooractive.com/...">
+
+<label>Beschreibung</label>
+<textarea id="desc" placeholder="Besonderheiten, Hinweise usw."></textarea>
+
+<label>Weitere Fotos</label>
+<input id="photos" type="file" accept="image/*" multiple>
+
+<label>Status</label>
+<select id="status">
+<option value="planned">🥾 Geplant</option>
+<option value="done">✅ Bereits gegangen</option>
+</select>
+
+<label>Begehungsdatum</label>
+<input id="date" type="date">
+
+<br><br>
+<button class="btn" type="submit">Tour speichern</button>
+
+</form>
+</div>
+</div>
+
 <script>
-let tours=JSON.parse(localStorage.getItem("bergToursV2")||"[]"),filter="all";
-const $=x=>document.getElementById(x);const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-function save(){localStorage.setItem("bergToursV2",JSON.stringify(tours));render()}
-function newTour(){openModal();$("formTitle").textContent="Neue Tour";$("form").reset();$("id").value=""}
-function openModal(){$("modal").classList.add("open")}function closeModal(){$("modal").classList.remove("open")}
-async function imgs(){return Promise.all([...$("photos").files].map(f=>new Promise(r=>{let x=new FileReader();x.onload=()=>r(x.result);x.readAsDataURL(f)})))}
-$("form").onsubmit=async e=>{e.preventDefault();let old=tours.find(t=>t.id==$("id").value), pics=await imgs();let t={id:old?.id||Date.now(),title:$("title").value,desc:$("desc").value,oa:$("oa").value,km:+$("km").value||0,elev:+$("elev").value||0,time:$("time").value,difficulty:$("difficulty").value,rating:+$("rating").value,status:$("status").value,date:$("date").value,notes:$("notes").value,photos:pics.length?pics:(old?.photos||[])};if(old)tours=tours.map(x=>x.id===old.id?t:x);else tours.unshift(t);save();closeModal()}
-function edit(id){let t=tours.find(x=>x.id===id);openModal();$("formTitle").textContent="Tour bearbeiten";for(let k of ["id","title","desc","oa","km","elev","time","difficulty","rating","status","date","notes"])$(k).value=t[k]??""}
-function toggle(id){let t=tours.find(x=>x.id===id);t.status=t.status==="done"?"planned":"done";if(t.status==="done"&&!t.date)t.date=new Date().toISOString().slice(0,10);save()}
-function del(id){if(confirm("Tour wirklich löschen?")){tours=tours.filter(t=>t.id!==id);save()}}
-function render(){$("p").textContent=tours.filter(t=>t.status==="planned").length;$("d").textContent=tours.filter(t=>t.status==="done").length;$("h").textContent=tours.reduce((a,t)=>a+(+t.elev||0),0).toLocaleString("de-DE");let a=tours.filter(t=>filter==="all"||t.status===filter);$("list").innerHTML=a.length?a.map(t=>`<article class="card">${t.photos?.[0]?`<img src="${t.photos[0]}">`:""}<span class="badge">${t.status==="done"?"✅ Erledigt":"🥾 Geplant"}</span><h3>${esc(t.title)}</h3><div class="meta">${esc(t.difficulty)} · ${t.km} km · ${t.elev} hm${t.time?" · "+esc(t.time):""}</div>${t.rating?`<div class="stars">${"⭐".repeat(t.rating)}</div>`:""}<p>${esc(t.desc||"Keine Beschreibung")}</p>${t.date?`<div class="meta">📅 ${new Date(t.date+"T12:00:00").toLocaleDateString("de-DE")}</div>`:""}${t.oa?`<a href="${esc(t.oa)}" target="_blank">🗺️ Outdooractive öffnen</a>`:""}${t.notes?`<p><b>Notizen:</b> ${esc(t.notes)}</p>`:""}${t.photos?.length>1?`<div class="photoGrid">${t.photos.slice(1).map(x=>`<img src="${x}">`).join("")}</div>`:""}<div class="toolbar"><button class="btn" onclick="toggle(${t.id})">${t.status==="done"?"↩ Wieder planen":"✅ Als gegangen markieren"}</button><button class="btn alt" onclick="edit(${t.id})">✏️ Bearbeiten</button><button class="btn alt" onclick="del(${t.id})">🗑️</button></div></article>`).join(""):`<div class="empty">Noch keine Touren gespeichert.<br>Füge deine erste Tour hinzu! 🏔️</div>`}
-if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});render();
-</script></body></html>
+
+let tours=JSON.parse(localStorage.getItem("bergTours")||"[]");
+let filter="all";
+
+const $=id=>document.getElementById(id);
+
+function openModal(){
+$("modal").classList.add("open");
+}
+
+function closeModal(){
+$("modal").classList.remove("open");
+$("form").reset();
+}
+
+function esc(s){
+return String(s??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+}[c]));
+}
+
+function persist(){
+localStorage.setItem("bergTours",JSON.stringify(tours));
+render();
+}
+
+function readFile(file){
+return new Promise(resolve=>{
+if(!file){
+resolve("");
+return;
+}
+let reader=new FileReader();
+reader.onload=()=>resolve(reader.result);
+reader.readAsDataURL(file);
+});
+}
+
+async function readPhotos(){
+return Promise.all(
+[...$("photos").files].map(file=>readFile(file))
+);
+}
+
+$("form").onsubmit=async e=>{
+
+e.preventDefault();
+
+let cover=await readFile($("cover").files[0]);
+let photos=await readPhotos();
+
+tours.unshift({
+
+id:Date.now(),
+
+title:$("title").value,
+
+cover:cover,
+
+place:$("place").value,
+
+drive:$("drive").value,
+
+elev:+$("elev").value||0,
+
+totalElev:+$("totalElev").value||0,
+
+time:$("time").value,
+
+km:+$("km").value||0,
+
+difficulty:$("difficulty").value,
+
+desc:$("desc").value,
+
+oa:$("oa").value,
+
+status:$("status").value,
+
+date:$("date").value,
+
+photos:photos
+
+});
+
+persist();
+closeModal();
+
+};
+
+function toggle(id){
+
+let t=tours.find(x=>x.id===id);
+
+t.status=t.status==="done"?"planned":"done";
+
+if(t.status==="done"&&!t.date){
+
+t.date=new Date().toISOString().slice(0,10);
+
+}
+
+persist();
+
+}
+
+function removeTour(id){
+
+if(confirm("Tour wirklich löschen?")){
+
+tours=tours.filter(x=>x.id!==id);
+
+persist();
+
+}
+
+}
+
+function render(){
+
+$("planned").textContent=
+tours.filter(t=>t.status==="planned").length;
+
+$("done").textContent=
+tours.filter(t=>t.status==="done").length;
+
+$("hm").textContent=
+tours.reduce((a,t)=>a+(+t.elev||0),0).toLocaleString("de-DE");
+
+let arr=tours.filter(
+t=>filter==="all"||t.status===filter
+);
+
+$("list").innerHTML=arr.length?
+
+arr.map(t=>`
+
+<article class="card">
+
+${t.cover?
+`<img src="${t.cover}" alt="${esc(t.title)}">`
+:
+t.photos?.[0]?
+`<img src="${t.photos[0]}" alt="${esc(t.title)}">`
+:""}
+
+<span class="badge">
+${t.status==="done"?"✅ Erledigt":"🥾 Geplant"}
+</span>
+
+<h3>${esc(t.title)}</h3>
+
+${t.place?
+`<div class="meta">📍 ${esc(t.place)}</div>`:""}
+
+<div class="info">
+
+<div class="meta">
+🚗 <b>Fahrzeit:</b>
+${t.drive?esc(t.drive):"nicht angegeben"}
+</div>
+
+<div class="meta">
+⬆️ <b>HM zum Gehen:</b>
+${t.elev||0} HM
+</div>
+
+<div class="meta">
+⛰️ <b>Gesamthöhenmeter:</b>
+${t.totalElev||0} HM
+</div>
+
+<div class="meta">
+🥾 <b>Gehzeit:</b>
+${t.time?esc(t.time):"nicht angegeben"}
+</div>
+
+<div class="meta">
+📏 <b>Strecke:</b>
+${t.km||0} km
+</div>
+
+<div class="meta">
+⭐ <b>Schwierigkeit:</b>
+${esc(t.difficulty)}
+</div>
+
+</div>
+
+<p>${esc(t.desc||"Keine Beschreibung")}</p>
+
+${t.date?
+`<div class="meta">
+📅 ${new Date(t.date+"T12:00:00").toLocaleDateString("de-DE")}
+</div>`:""}
+
+${t.oa?
+`<a class="link" href="${esc(t.oa)}" target="_blank" rel="noopener">
+🗺️ Outdooractive öffnen
+</a>`:""}
+
+<div class="toolbar">
+
+<button class="btn" onclick="toggle(${t.id})">
+${t.status==="done"?
+"↩ Wieder planen":
+"✅ Als gegangen markieren"}
+</button>
+
+<button class="btn alt" onclick="removeTour(${t.id})">
+Löschen
+</button>
+
+</div>
+
+</article>
+
+`).join("")
+
+:
+
+`<div class="empty">
+Noch keine Touren gespeichert.<br>
+Füge deine erste Tour hinzu! 🏔️
+</div>`;
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
