@@ -121,7 +121,9 @@ font-size:12px;
 font-weight:700
 }
 
-.card p{line-height:1.45}
+.card p{
+line-height:1.45
+}
 
 .empty{
 text-align:center;
@@ -140,7 +142,9 @@ padding:16px;
 z-index:10
 }
 
-.modal.open{display:flex}
+.modal.open{
+display:flex
+}
 
 .modalbox{
 max-width:540px;
@@ -149,7 +153,9 @@ max-height:92vh;
 overflow:auto
 }
 
-.close{float:right}
+.close{
+float:right
+}
 
 .row{
 display:grid;
@@ -172,7 +178,9 @@ border-radius:10px;
 font:inherit
 }
 
-textarea{min-height:85px}
+textarea{
+min-height:85px
+}
 
 .link{
 color:#2f6751;
@@ -207,6 +215,33 @@ width:70px;
 height:70px;
 object-fit:cover;
 border-radius:8px
+}
+
+.detail-cover{
+width:100%;
+max-height:300px;
+object-fit:cover;
+border-radius:14px;
+margin-bottom:14px
+}
+
+.detail-title{
+font-size:28px;
+margin:5px 0 12px
+}
+
+.detail-section{
+background:#f0f5f1;
+border-radius:14px;
+padding:13px;
+margin:12px 0
+}
+
+.detail-buttons{
+display:flex;
+gap:9px;
+flex-wrap:wrap;
+margin-top:16px
 }
 
 @media(max-width:520px){
@@ -284,6 +319,25 @@ Erledigt
 </main>
 
 
+<!-- DETAILANSICHT -->
+
+<div id="detailModal" class="modal">
+
+<div class="modalbox">
+
+<button class="btn alt close" onclick="closeDetail()">
+Schließen
+</button>
+
+<div id="detailContent"></div>
+
+</div>
+
+</div>
+
+
+<!-- BEARBEITEN / NEUE TOUR -->
+
 <div id="modal" class="modal">
 
 <div class="modalbox">
@@ -307,6 +361,15 @@ Schließen
 <label>Ort des Berges</label>
 <input id="place" placeholder="z. B. Ramsau bei Berchtesgaden">
 
+
+<label>🅿️ Parkplatz</label>
+<input id="parking" placeholder="z. B. Parkplatz Halswald">
+
+
+<label>🗺️ Google-Maps-Link zum Parkplatz</label>
+<input id="parkingLink" type="url" placeholder="https://maps.google.com/...">
+
+
 <div class="row">
 
 <div>
@@ -320,6 +383,7 @@ Schließen
 </div>
 
 </div>
+
 
 <div class="row">
 
@@ -335,6 +399,7 @@ Schließen
 
 </div>
 
+
 <div class="row">
 
 <div>
@@ -343,26 +408,33 @@ Schließen
 </div>
 
 <div>
+
 <label>Schwierigkeit</label>
 
 <select id="difficulty">
+
 <option>leicht</option>
 <option selected>mittel</option>
 <option>schwer</option>
+
 </select>
 
 </div>
 
 </div>
 
+
 <label>Outdooractive-Link</label>
 <input id="oa" type="url" placeholder="https://www.outdooractive.com/...">
+
 
 <label>Beschreibung</label>
 <textarea id="desc" placeholder="Besonderheiten, Hinweise usw."></textarea>
 
+
 <label>Weitere Fotos</label>
 <input id="photos" type="file" accept="image/*" multiple>
+
 
 <label>Status</label>
 
@@ -378,8 +450,10 @@ Schließen
 
 </select>
 
+
 <label>Begehungsdatum</label>
 <input id="date" type="date">
+
 
 <br><br>
 
@@ -404,6 +478,8 @@ const API=SUPABASE_URL+"/rest/v1/touren";
 let tours=[];
 
 let filter="all";
+
+let currentDetailId=null;
 
 const $=id=>document.getElementById(id);
 
@@ -487,7 +563,9 @@ headers:headers()
 
 if(!response.ok){
 
-throw new Error(await response.text());
+throw new Error(
+await response.text()
+);
 
 }
 
@@ -536,6 +614,7 @@ if(tour.id){
 response=await fetch(
 API+"?id=eq."+encodeURIComponent(tour.id),
 {
+
 method:"PATCH",
 
 headers:{
@@ -553,6 +632,7 @@ body:JSON.stringify(tour)
 response=await fetch(
 API,
 {
+
 method:"POST",
 
 headers:{
@@ -569,7 +649,9 @@ body:JSON.stringify(tour)
 
 if(!response.ok){
 
-throw new Error(await response.text());
+throw new Error(
+await response.text()
+);
 
 }
 
@@ -590,7 +672,9 @@ headers:headers()
 
 if(!response.ok){
 
-throw new Error(await response.text());
+throw new Error(
+await response.text()
+);
 
 }
 
@@ -625,13 +709,20 @@ $("title").value=t.title||"";
 
 $("place").value=t.place||"";
 
+$("parking").value=t.parking||"";
+
+$("parkingLink").value=
+t.parking_link||"";
+
 $("drive").value=t.drive||"";
 
 $("elev").value=t.elev||"";
 
-$("totalElev").value=t.total_elev||"";
+$("totalElev").value=
+t.total_elev||"";
 
-$("time").value=t.tour_time||"";
+$("time").value=
+t.tour_time||"";
 
 $("km").value=t.km||"";
 
@@ -694,7 +785,9 @@ reader.readAsDataURL(file);
 async function readPhotos(){
 
 return Promise.all(
-[...$("photos").files].map(file=>readFile(file))
+[...$("photos").files].map(
+file=>readFile(file)
+)
 );
 
 }
@@ -708,7 +801,8 @@ let button=e.submitter;
 
 button.disabled=true;
 
-button.textContent="⏳ Speichern...";
+button.textContent=
+"⏳ Speichern...";
 
 try{
 
@@ -720,6 +814,7 @@ x=>String(x.id)===String(id)
 ):
 null;
 
+
 let cover=old?.cover||"";
 
 if($("cover").files[0]){
@@ -729,6 +824,7 @@ $("cover").files[0]
 );
 
 }
+
 
 let photos=old?.photos||[];
 
@@ -744,6 +840,7 @@ photos=[
 
 }
 
+
 let tour={
 
 title:$("title").value.trim(),
@@ -752,35 +849,49 @@ cover:cover,
 
 place:$("place").value.trim(),
 
+parking:$("parking").value.trim(),
+
+parking_link:
+$("parkingLink").value.trim(),
+
 drive:$("drive").value.trim(),
 
 elev:+$("elev").value||0,
 
-total_elev:+$("totalElev").value||0,
+total_elev:
++$("totalElev").value||0,
 
-tour_time:$("time").value.trim(),
+tour_time:
+$("time").value.trim(),
 
 km:+$("km").value||0,
 
-difficulty:$("difficulty").value,
+difficulty:
+$("difficulty").value,
 
-description:$("desc").value.trim(),
+description:
+$("desc").value.trim(),
 
-outdooractive:$("oa").value.trim(),
+outdooractive:
+$("oa").value.trim(),
 
-status:$("status").value,
+status:
+$("status").value,
 
-tour_date:$("date").value||null,
+tour_date:
+$("date").value||null,
 
 photos:photos
 
 };
+
 
 if(id){
 
 tour.id=id;
 
 }
+
 
 await saveTour(tour);
 
@@ -801,9 +912,388 @@ error.message
 
 button.disabled=false;
 
-button.textContent="💾 Tour speichern";
+button.textContent=
+"💾 Tour speichern";
 
 };
+
+
+function openDetail(id){
+
+let t=tours.find(
+x=>String(x.id)===String(id)
+);
+
+if(!t)return;
+
+currentDetailId=t.id;
+
+let image=
+t.cover||
+t.photos?.[0]||
+"";
+
+let oa=safeUrl(t.outdooractive);
+
+let parkingLink=
+safeUrl(t.parking_link);
+
+
+$("detailContent").innerHTML=`
+
+${image?
+
+`<img
+class="detail-cover"
+src="${image}"
+alt="${esc(t.title)}"
+>`
+
+:""}
+
+
+<div class="detail-title">
+🏔️ ${esc(t.title)}
+</div>
+
+
+<span class="badge">
+
+${
+t.status==="done"?
+"✅ Erledigt":
+"🥾 Geplant"
+}
+
+</span>
+
+
+${t.place?
+
+`<div class="detail-section">
+
+<div class="meta">
+📍 <b>Ort:</b>
+${esc(t.place)}
+</div>
+
+</div>`
+
+:""}
+
+
+<div class="detail-section">
+
+
+${t.parking?
+
+`<div class="meta">
+
+🅿️ <b>Parkplatz:</b>
+
+${esc(t.parking)}
+
+</div>`
+
+:""}
+
+
+${parkingLink?
+
+`<button
+class="btn"
+onclick="openParking('${parkingLink}')"
+>
+🗺️ Parkplatz in Google Maps öffnen
+</button>`
+
+:""}
+
+
+</div>
+
+
+<div class="detail-section">
+
+
+<div class="meta">
+
+🚗 <b>Fahrzeit:</b>
+
+${
+t.drive?
+esc(t.drive):
+"nicht angegeben"
+}
+
+</div>
+
+
+<div class="meta">
+
+⬆️ <b>HM zum Gehen:</b>
+
+${t.elev||0} HM
+
+</div>
+
+
+<div class="meta">
+
+⛰️ <b>Gesamthöhenmeter:</b>
+
+${t.total_elev||0} HM
+
+</div>
+
+
+<div class="meta">
+
+🥾 <b>Gehzeit:</b>
+
+${
+t.tour_time?
+esc(t.tour_time):
+"nicht angegeben"
+}
+
+</div>
+
+
+<div class="meta">
+
+📏 <b>Strecke:</b>
+
+${t.km||0} km
+
+</div>
+
+
+<div class="meta">
+
+⭐ <b>Schwierigkeit:</b>
+
+${esc(
+t.difficulty||"mittel"
+)}
+
+</div>
+
+
+</div>
+
+
+${t.description?
+
+`<div class="detail-section">
+
+<b>📝 Beschreibung</b>
+
+<p>
+${esc(t.description)}
+</p>
+
+</div>`
+
+:""}
+
+
+${t.tour_date?
+
+`<div class="meta">
+
+📅 <b>Begehungsdatum:</b>
+
+${
+new Date(
+t.tour_date+"T12:00:00"
+).toLocaleDateString(
+"de-DE"
+)
+}
+
+</div>`
+
+:""}
+
+
+${oa?
+
+`<div class="detail-section">
+
+<a
+class="link"
+href="${oa}"
+target="_blank"
+rel="noopener"
+>
+🗺️ Outdooractive öffnen
+</a>
+
+</div>`
+
+:""}
+
+
+${t.photos?.length?
+
+`<div class="gallery">
+
+${t.photos.map(p=>`
+
+<img
+src="${p}"
+alt=""
+>
+
+`).join("")}
+
+</div>`
+
+:""}
+
+
+<div class="detail-buttons">
+
+
+<button
+class="btn"
+onclick="shareTour()"
+>
+📤 Tour teilen
+</button>
+
+
+<button
+class="btn alt"
+onclick="editCurrentTour()"
+>
+✏️ Bearbeiten
+</button>
+
+
+<button
+class="btn alt"
+onclick="closeDetail()"
+>
+Schließen
+</button>
+
+
+</div>
+
+`;
+
+$("detailModal").classList.add("open");
+
+}
+
+
+function closeDetail(){
+
+$("detailModal").classList.remove("open");
+
+currentDetailId=null;
+
+}
+
+
+function editCurrentTour(){
+
+if(currentDetailId===null)return;
+
+let id=currentDetailId;
+
+closeDetail();
+
+openModal(id);
+
+}
+
+
+function openParking(url){
+
+if(!url)return;
+
+window.open(url,"_blank");
+
+}
+
+
+async function shareTour(){
+
+let t=tours.find(
+x=>String(x.id)===String(currentDetailId)
+);
+
+if(!t)return;
+
+
+let text=
+"🏔️ "+(t.title||"Bergtour")+"\n\n";
+
+
+if(t.place)
+text+="📍 Ort: "+t.place+"\n";
+
+if(t.parking)
+text+="🅿️ Parkplatz: "+t.parking+"\n";
+
+if(t.drive)
+text+="🚗 Fahrzeit: "+t.drive+"\n";
+
+if(t.elev)
+text+="⬆️ HM: "+t.elev+" HM\n";
+
+if(t.total_elev)
+text+="⛰️ Gesamthöhenmeter: "+t.total_elev+" HM\n";
+
+if(t.tour_time)
+text+="🥾 Gehzeit: "+t.tour_time+"\n";
+
+if(t.km)
+text+="📏 Strecke: "+t.km+" km\n";
+
+if(t.difficulty)
+text+="⭐ Schwierigkeit: "+t.difficulty+"\n";
+
+if(t.description)
+text+="\n📝 "+t.description+"\n";
+
+if(t.outdooractive)
+text+="\n🗺️ Outdooractive: "+t.outdooractive;
+
+
+try{
+
+if(navigator.share){
+
+await navigator.share({
+
+title:t.title||
+"Meine Bergtour",
+
+text:text
+
+});
+
+}else{
+
+await navigator.clipboard.writeText(text);
+
+alert(
+"Die Tour wurde in die Zwischenablage kopiert."
+);
+
+}
+
+}catch(error){
+
+console.log(error);
+
+}
+
+}
 
 
 async function toggle(id){
@@ -818,6 +1308,7 @@ let newStatus=
 t.status==="done"?
 "planned":
 "done";
+
 
 let update={
 
@@ -835,6 +1326,7 @@ null
 
 };
 
+
 try{
 
 setConnection(
@@ -843,7 +1335,9 @@ setConnection(
 
 let response=await fetch(
 
-API+"?id=eq."+encodeURIComponent(id),
+API+
+"?id=eq."+
+encodeURIComponent(id),
 
 {
 
@@ -860,6 +1354,7 @@ body:JSON.stringify(update)
 
 );
 
+
 if(!response.ok){
 
 throw new Error(
@@ -867,6 +1362,7 @@ await response.text()
 );
 
 }
+
 
 await loadTours();
 
@@ -888,6 +1384,7 @@ async function removeTour(id){
 if(!confirm(
 "Tour wirklich löschen?"
 ))return;
+
 
 try{
 
@@ -912,8 +1409,6 @@ alert(
 }
 
 
-/* NEUE ÖFFNEN-FUNKTION */
-
 function openTourFromCard(event){
 
 if(
@@ -931,17 +1426,9 @@ event.currentTarget;
 let id=
 card.getAttribute("data-id");
 
-if(!id){
+if(!id)return;
 
-console.error(
-"Keine Tour-ID gefunden"
-);
-
-return;
-
-}
-
-openModal(id);
+openDetail(id);
 
 }
 
@@ -953,10 +1440,12 @@ tours.filter(
 t=>t.status==="planned"
 ).length;
 
+
 $("done").textContent=
 tours.filter(
 t=>t.status==="done"
 ).length;
+
 
 $("hm").textContent=
 tours.reduce(
@@ -981,11 +1470,6 @@ t.cover||
 t.photos?.[0]||
 "";
 
-let oa=
-safeUrl(t.outdooractive);
-
-
-/* ID wird sicher als Text gespeichert */
 
 let tourId=
 String(t.id).replace(
@@ -1001,6 +1485,7 @@ class="card"
 data-id="${tourId}"
 onclick="openTourFromCard(event)"
 >
+
 
 ${image?
 
@@ -1115,63 +1600,6 @@ t.description||
 )}
 
 </p>
-
-
-${
-t.tour_date?
-
-`<div class="meta">
-
-📅 ${
-new Date(
-t.tour_date+"T12:00:00"
-).toLocaleDateString("de-DE")
-}
-
-</div>`
-
-:""
-}
-
-
-${
-oa?
-
-`<a
-class="link"
-href="${oa}"
-target="_blank"
-rel="noopener"
->
-🗺️ Outdooractive öffnen
-</a>`
-
-:""
-}
-
-
-${
-t.photos?.length?
-
-`
-
-<div class="gallery">
-
-${t.photos.map(p=>`
-
-<img
-src="${p}"
-alt=""
->
-
-`).join("")}
-
-</div>
-
-`
-
-:""
-}
 
 
 <div class="toolbar">
