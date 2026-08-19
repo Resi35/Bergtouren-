@@ -28,7 +28,11 @@ margin:auto;
 padding:18px
 }
 
-h1{margin:0 0 5px;font-size:29px}
+h1{
+margin:0 0 5px;
+font-size:29px
+}
+
 .muted{opacity:.85}
 
 .stats{
@@ -45,7 +49,11 @@ padding:16px;
 box-shadow:0 3px 16px #0001
 }
 
-.stat b{font-size:22px;display:block}
+.stat b{
+font-size:22px;
+display:block
+}
+
 .stat small{color:#718078}
 
 .toolbar{
@@ -81,7 +89,9 @@ grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
 gap:14px
 }
 
-.card{cursor:pointer}
+.card{
+cursor:pointer
+}
 
 .card img{
 width:100%;
@@ -91,7 +101,9 @@ border-radius:12px;
 margin-bottom:10px
 }
 
-.card h3{margin:8px 0 5px}
+.card h3{
+margin:8px 0 5px
+}
 
 .meta{
 font-size:13px;
@@ -109,7 +121,9 @@ font-size:12px;
 font-weight:700
 }
 
-.card p{line-height:1.45}
+.card p{
+line-height:1.45
+}
 
 .empty{
 text-align:center;
@@ -128,16 +142,20 @@ padding:16px;
 z-index:10
 }
 
-.modal.open{display:flex}
+.modal.open{
+display:flex
+}
 
 .modalbox{
-max-width:600px;
+max-width:540px;
 width:100%;
 max-height:92vh;
 overflow:auto
 }
 
-.close{float:right}
+.close{
+float:right
+}
 
 .row{
 display:grid;
@@ -160,17 +178,19 @@ border-radius:10px;
 font:inherit
 }
 
-textarea{min-height:85px}
+textarea{
+min-height:85px
+}
 
 .link{
 color:#2f6751;
 font-weight:700
 }
 
-.info,.detail-section{
+.info{
 background:#f0f5f1;
-border-radius:14px;
-padding:13px;
+border-radius:12px;
+padding:10px;
 margin:10px 0
 }
 
@@ -186,13 +206,13 @@ font-size:13px
 .gallery{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:7px;
-margin-top:12px
+gap:8px;
+margin-top:10px
 }
 
 .gallery img{
 width:100%;
-height:110px;
+height:100px;
 object-fit:cover;
 border-radius:10px;
 cursor:pointer
@@ -200,16 +220,23 @@ cursor:pointer
 
 .detail-cover{
 width:100%;
-max-height:320px;
+max-height:300px;
 object-fit:cover;
 border-radius:14px;
-margin-bottom:14px
+margin-bottom:14px;
+cursor:pointer
 }
 
 .detail-title{
 font-size:28px;
-font-weight:800;
 margin:5px 0 12px
+}
+
+.detail-section{
+background:#f0f5f1;
+border-radius:14px;
+padding:13px;
+margin:12px 0
 }
 
 .detail-buttons{
@@ -219,59 +246,43 @@ flex-wrap:wrap;
 margin-top:16px
 }
 
-/* großes Bild */
+/* Bild groß */
 
-.photo-viewer{
+.image-modal{
 position:fixed;
 inset:0;
 background:#000e;
 display:none;
 align-items:center;
 justify-content:center;
-z-index:30;
-padding:15px
+padding:15px;
+z-index:30
 }
 
-.photo-viewer.open{
+.image-modal.open{
 display:flex
 }
 
-.photo-viewer img{
+.image-modal img{
 max-width:96vw;
-max-height:88vh;
+max-height:90vh;
 object-fit:contain;
-border-radius:10px
+border-radius:12px
 }
 
-.photo-close{
+.image-close{
 position:absolute;
-right:15px;
 top:15px;
-font-size:24px;
-padding:8px 13px;
-z-index:31
+right:15px;
+font-size:22px
 }
 
-.photo-nav{
-position:absolute;
-top:50%;
-transform:translateY(-50%);
-font-size:28px;
-padding:12px 16px
-}
-
-.photo-prev{left:10px}
-.photo-next{right:10px}
-
-.photo-counter{
-position:absolute;
-bottom:15px;
-left:50%;
-transform:translateX(-50%);
-color:white;
-background:#0009;
-padding:6px 12px;
-border-radius:20px
+.share-info{
+background:#eef4ef;
+border-radius:12px;
+padding:10px;
+margin-top:12px;
+font-size:13px
 }
 
 @media(max-width:520px){
@@ -290,10 +301,6 @@ grid-template-columns:1fr
 
 .gallery{
 grid-template-columns:repeat(3,1fr)
-}
-
-.gallery img{
-height:90px
 }
 
 }
@@ -370,11 +377,10 @@ Schließen
 <div id="detailContent"></div>
 
 </div>
-
 </div>
 
 
-<!-- BEARBEITEN -->
+<!-- BEARBEITEN / NEUE TOUR -->
 
 <div id="modal" class="modal">
 
@@ -442,11 +448,13 @@ Schließen
 
 <div>
 <label>Schwierigkeit</label>
+
 <select id="difficulty">
 <option>leicht</option>
 <option selected>mittel</option>
 <option>schwer</option>
 </select>
+
 </div>
 
 </div>
@@ -461,9 +469,17 @@ Schließen
 <input id="photos" type="file" accept="image/*" multiple>
 
 <label>Status</label>
+
 <select id="status">
-<option value="planned">🥾 Geplant</option>
-<option value="done">✅ Bereits gegangen</option>
+
+<option value="planned">
+🥾 Geplant
+</option>
+
+<option value="done">
+✅ Bereits gegangen
+</option>
+
 </select>
 
 <label>Begehungsdatum</label>
@@ -481,42 +497,35 @@ Schließen
 </div>
 
 
-<!-- FOTO-VIEWER -->
+<!-- GROSSES BILD -->
 
-<div id="photoViewer" class="photo-viewer">
+<div id="imageModal" class="image-modal" onclick="closeImage()">
 
-<button class="btn alt photo-close" onclick="closePhoto()">
+<button class="btn alt image-close" onclick="event.stopPropagation();closeImage()">
 ✕
 </button>
 
-<button class="btn photo-nav photo-prev" onclick="previousPhoto()">
-‹
-</button>
-
-<img id="bigPhoto" src="" alt="">
-
-<button class="btn photo-nav photo-next" onclick="nextPhoto()">
-›
-</button>
-
-<div id="photoCounter" class="photo-counter"></div>
+<img id="largeImage" src="" alt="" onclick="event.stopPropagation()">
 
 </div>
 
 
 <script>
 
-const SUPABASE_URL="https://wklyvofseereubtelpha.supabase.co";
+const SUPABASE_URL=
+"https://wklyvofseereubtelpha.supabase.co";
 
-const SUPABASE_KEY="sb_publishable_TvoavcCRENtHJwBuXpp1tg_E9WsbMZx";
+const SUPABASE_KEY=
+"sb_publishable_TvoavcCRENtHJwBuXpp1tg_E9WsbMZx";
 
-const API=SUPABASE_URL+"/rest/v1/touren";
+const API=
+SUPABASE_URL+"/rest/v1/touren";
 
 let tours=[];
+
 let filter="all";
+
 let currentDetailId=null;
-let currentPhotos=[];
-let currentPhotoIndex=0;
 
 const $=id=>document.getElementById(id);
 
@@ -524,9 +533,15 @@ const $=id=>document.getElementById(id);
 function headers(){
 
 return{
+
 "apikey":SUPABASE_KEY,
-"Authorization":"Bearer "+SUPABASE_KEY,
-"Content-Type":"application/json"
+
+"Authorization":
+"Bearer "+SUPABASE_KEY,
+
+"Content-Type":
+"application/json"
+
 };
 
 }
@@ -544,7 +559,9 @@ ok?"#eef4ef":"#fbeaea";
 
 function esc(s){
 
-return String(s??"").replace(/[&<>"']/g,c=>({
+return String(s??"").replace(
+/[&<>"']/g,
+c=>({
 
 "&":"&amp;",
 "<":"&lt;",
@@ -552,7 +569,8 @@ return String(s??"").replace(/[&<>"']/g,c=>({
 '"':"&quot;",
 "'":"&#039;"
 
-}[c]));
+}[c])
+);
 
 }
 
@@ -585,20 +603,29 @@ async function loadTours(){
 
 try{
 
-setConnection("☁️ Touren werden geladen...");
+setConnection(
+"☁️ Touren werden geladen..."
+);
 
-let response=await fetch(
-API+"?select=*&order=created_at.desc",
+let response=
+await fetch(
+API+
+"?select=*&order=created_at.desc",
 {
 headers:headers()
 }
 );
 
 if(!response.ok){
-throw new Error(await response.text());
+
+throw new Error(
+await response.text()
+);
+
 }
 
-tours=await response.json();
+tours=
+await response.json();
 
 setConnection(
 "☁️ Mit der Bergtouren-Datenbank verbunden"
@@ -618,9 +645,13 @@ false
 $("list").innerHTML=`
 
 <div class="empty">
+
 Die Touren konnten nicht geladen werden.
+
 <br><br>
+
 Bitte überprüfe die Supabase-Einstellungen.
+
 </div>
 
 `;
@@ -636,36 +667,56 @@ let response;
 
 if(tour.id){
 
-response=await fetch(
-API+"?id=eq."+encodeURIComponent(tour.id),
+response=
+await fetch(
+API+
+"?id=eq."+
+encodeURIComponent(tour.id),
 {
+
 method:"PATCH",
+
 headers:{
 ...headers(),
-"Prefer":"return=representation"
+"Prefer":
+"return=representation"
 },
-body:JSON.stringify(tour)
+
+body:
+JSON.stringify(tour)
+
 }
 );
 
 }else{
 
-response=await fetch(
+response=
+await fetch(
 API,
 {
+
 method:"POST",
+
 headers:{
 ...headers(),
-"Prefer":"return=representation"
+"Prefer":
+"return=representation"
 },
-body:JSON.stringify(tour)
+
+body:
+JSON.stringify(tour)
+
 }
 );
 
 }
 
 if(!response.ok){
-throw new Error(await response.text());
+
+throw new Error(
+await response.text()
+);
+
 }
 
 return await response.json();
@@ -675,8 +726,11 @@ return await response.json();
 
 async function deleteTour(id){
 
-let response=await fetch(
-API+"?id=eq."+encodeURIComponent(id),
+let response=
+await fetch(
+API+
+"?id=eq."+
+encodeURIComponent(id),
 {
 method:"DELETE",
 headers:headers()
@@ -684,7 +738,11 @@ headers:headers()
 );
 
 if(!response.ok){
-throw new Error(await response.text());
+
+throw new Error(
+await response.text()
+);
+
 }
 
 }
@@ -699,31 +757,56 @@ $("form").reset();
 $("editId").value="";
 
 $("modalTitle").textContent=
-id?"Tour bearbeiten":"Neue Bergtour";
+id?
+"Tour bearbeiten":
+"Neue Bergtour";
 
 if(id){
 
-let t=tours.find(
+let t=
+tours.find(
 x=>String(x.id)===String(id)
 );
 
 if(!t)return;
 
 $("editId").value=t.id;
+
 $("title").value=t.title||"";
+
 $("place").value=t.place||"";
+
 $("parking").value=t.parking||"";
-$("parkingLink").value=t.parking_link||"";
+
+$("parkingLink").value=
+t.parking_link||"";
+
 $("drive").value=t.drive||"";
+
 $("elev").value=t.elev||"";
-$("totalElev").value=t.total_elev||"";
-$("time").value=t.tour_time||"";
+
+$("totalElev").value=
+t.total_elev||"";
+
+$("time").value=
+t.tour_time||"";
+
 $("km").value=t.km||"";
-$("difficulty").value=t.difficulty||"mittel";
-$("oa").value=t.outdooractive||"";
-$("desc").value=t.description||"";
-$("status").value=t.status||"planned";
-$("date").value=t.tour_date||"";
+
+$("difficulty").value=
+t.difficulty||"mittel";
+
+$("oa").value=
+t.outdooractive||"";
+
+$("desc").value=
+t.description||"";
+
+$("status").value=
+t.status||"planned";
+
+$("date").value=
+t.tour_date||"";
 
 }
 
@@ -746,15 +829,21 @@ function readFile(file){
 return new Promise(resolve=>{
 
 if(!file){
+
 resolve("");
+
 return;
+
 }
 
-let reader=new FileReader();
+let reader=
+new FileReader();
 
-reader.onload=()=>resolve(reader.result);
+reader.onload=()=>
+resolve(reader.result);
 
-reader.onerror=()=>resolve("");
+reader.onerror=()=>
+resolve("");
 
 reader.readAsDataURL(file);
 
@@ -766,42 +855,58 @@ reader.readAsDataURL(file);
 async function readPhotos(){
 
 return Promise.all(
-[...$("photos").files].map(file=>readFile(file))
+[...$("photos").files]
+.map(file=>readFile(file))
 );
 
 }
 
 
-$("form").onsubmit=async e=>{
+$("form").onsubmit=
+async e=>{
 
 e.preventDefault();
 
 let button=e.submitter;
 
 button.disabled=true;
-button.textContent="⏳ Speichern...";
+
+button.textContent=
+"⏳ Speichern...";
 
 try{
 
-let id=$("editId").value;
+let id=
+$("editId").value;
 
-let old=id?
+let old=
+id?
 tours.find(
 x=>String(x.id)===String(id)
 ):
 null;
 
-let cover=old?.cover||"";
+
+let cover=
+old?.cover||"";
 
 if($("cover").files[0]){
-cover=await readFile($("cover").files[0]);
+
+cover=
+await readFile(
+$("cover").files[0]
+);
+
 }
 
-let photos=old?.photos||[];
+
+let photos=
+old?.photos||[];
 
 if($("photos").files.length){
 
-let newPhotos=await readPhotos();
+let newPhotos=
+await readPhotos();
 
 photos=[
 ...photos,
@@ -810,45 +915,66 @@ photos=[
 
 }
 
+
 let tour={
 
-title:$("title").value.trim(),
+title:
+$("title").value.trim(),
 
-cover:cover,
+cover:
+cover,
 
-place:$("place").value.trim(),
+place:
+$("place").value.trim(),
 
-parking:$("parking").value.trim(),
+parking:
+$("parking").value.trim(),
 
-parking_link:$("parkingLink").value.trim(),
+parking_link:
+$("parkingLink").value.trim(),
 
-drive:$("drive").value.trim(),
+drive:
+$("drive").value.trim(),
 
-elev:+$("elev").value||0,
+elev:
++$("elev").value||0,
 
-total_elev:+$("totalElev").value||0,
+total_elev:
++$("totalElev").value||0,
 
-tour_time:$("time").value.trim(),
+tour_time:
+$("time").value.trim(),
 
-km:+$("km").value||0,
+km:
++$("km").value||0,
 
-difficulty:$("difficulty").value,
+difficulty:
+$("difficulty").value,
 
-description:$("desc").value.trim(),
+description:
+$("desc").value.trim(),
 
-outdooractive:$("oa").value.trim(),
+outdooractive:
+$("oa").value.trim(),
 
-status:$("status").value,
+status:
+$("status").value,
 
-tour_date:$("date").value||null,
+tour_date:
+$("date").value||null,
 
-photos:photos
+photos:
+photos
 
 };
 
+
 if(id){
+
 tour.id=id;
+
 }
+
 
 await saveTour(tour);
 
@@ -868,14 +994,17 @@ error.message
 }
 
 button.disabled=false;
-button.textContent="💾 Tour speichern";
+
+button.textContent=
+"💾 Tour speichern";
 
 };
 
 
 function openDetail(id){
 
-let t=tours.find(
+let t=
+tours.find(
 x=>String(x.id)===String(id)
 );
 
@@ -888,51 +1017,96 @@ t.cover||
 t.photos?.[0]||
 "";
 
-let oa=safeUrl(t.outdooractive);
-let parkingLink=safeUrl(t.parking_link);
+let oa=
+safeUrl(t.outdooractive);
 
-currentPhotos=t.photos||[];
+let parkingLink=
+safeUrl(t.parking_link);
+
 
 $("detailContent").innerHTML=`
 
-${image?
+${
+image?
+
 `<img
 class="detail-cover"
 src="${image}"
 alt="${esc(t.title)}"
->`:""}
+onclick="openImage('${image}')"
+>`
+
+:""
+}
+
 
 <div class="detail-title">
 🏔️ ${esc(t.title)}
 </div>
 
+
 <span class="badge">
-${t.status==="done"?"✅ Erledigt":"🥾 Geplant"}
+
+${
+t.status==="done"?
+"✅ Erledigt":
+"🥾 Geplant"
+}
+
 </span>
 
-${t.place?
+
+${
+t.place?
+
 `<div class="detail-section">
+
 <div class="meta">
-📍 <b>Ort:</b> ${esc(t.place)}
+📍 <b>Ort:</b>
+${esc(t.place)}
 </div>
-</div>`:""}
 
-${t.parking||parkingLink?
+</div>`
+
+:""
+}
+
+
+${
+t.parking || parkingLink?
+
 `<div class="detail-section">
 
-${t.parking?
-`<div class="meta">
-🅿️ <b>Parkplatz:</b> ${esc(t.parking)}
-</div>`:""}
+${
+t.parking?
 
-${parkingLink?
+`<div class="meta">
+🅿️ <b>Parkplatz:</b>
+${esc(t.parking)}
+</div>`
+
+:""
+}
+
+
+${
+parkingLink?
+
 `<button
 class="btn"
-onclick="openParking('${parkingLink}')">
+onclick="openParking()"
+>
 🗺️ Parkplatz in Google Maps öffnen
-</button>`:""}
+</button>`
 
-</div>`:""}
+:""
+}
+
+</div>`
+
+:""
+}
+
 
 <div class="detail-section">
 
@@ -968,63 +1142,124 @@ ${esc(t.difficulty||"mittel")}
 
 </div>
 
-${t.description?
+
+${
+t.description?
+
 `<div class="detail-section">
+
 <b>📝 Beschreibung</b>
-<p>${esc(t.description)}</p>
-</div>`:""}
 
-${t.tour_date?
-`<div class="detail-section">
+<p>
+${esc(t.description)}
+</p>
+
+</div>`
+
+:""
+}
+
+
+${
+t.tour_date?
+
+`<div class="meta">
+
 📅 <b>Begehungsdatum:</b>
-${new Date(
-t.tour_date+"T12:00:00"
-).toLocaleDateString("de-DE")}
-</div>`:""}
 
-${oa?
+${
+new Date(
+t.tour_date+"T12:00:00"
+).toLocaleDateString("de-DE")
+}
+
+</div>`
+
+:""
+}
+
+
+${
+oa?
+
 `<div class="detail-section">
+
 <a
 class="link"
 href="${oa}"
 target="_blank"
-rel="noopener">
+rel="noopener"
+>
 🗺️ Outdooractive öffnen
 </a>
-</div>`:""}
 
-${currentPhotos.length?
+</div>`
+
+:""
+}
+
+
+${
+t.photos?.length?
+
 `<div class="detail-section">
 
-<b>📸 Fotos</b>
+<b>📷 Alle Fotos</b>
 
 <div class="gallery">
 
-${currentPhotos.map((p,i)=>`
+${
+t.photos.map(p=>`
+
 <img
 src="${p}"
 alt=""
-onclick="openPhoto(${i})"
+onclick="openImage('${p}')"
 >
-`).join("")}
+
+`).join("")
+}
 
 </div>
 
-</div>`:""}
+</div>`
+
+:""
+}
+
 
 <div class="detail-buttons">
 
-<button class="btn" onclick="shareTour()">
-📤 Tour teilen
+<button
+class="btn"
+onclick="shareTour()"
+>
+📤 Tour mit allen Infos teilen
 </button>
 
-<button class="btn alt" onclick="editCurrentTour()">
+
+<button
+class="btn alt"
+onclick="editCurrentTour()"
+>
 ✏️ Bearbeiten
 </button>
 
-<button class="btn red" onclick="removeFromDetail()">
-🗑️ Löschen
+
+<button
+class="btn alt"
+onclick="closeDetail()"
+>
+Schließen
 </button>
+
+</div>
+
+
+<div class="share-info">
+
+📤 Beim Teilen werden die Tourdaten und möglichst
+alle Bilder gemeinsam an das Android-Teilen-Menü übergeben.
 
 </div>
 
@@ -1057,153 +1292,227 @@ openModal(id);
 }
 
 
-function removeFromDetail(){
+function openParking(){
 
-if(currentDetailId===null)return;
-
-let id=currentDetailId;
-
-closeDetail();
-
-removeTour(id);
-
-}
-
-
-function openParking(url){
-
-if(!url)return;
-
-window.open(url,"_blank");
-
-}
-
-
-/* FOTO-VIEWER */
-
-function openPhoto(index){
-
-if(!currentPhotos.length)return;
-
-currentPhotoIndex=index;
-
-updatePhotoViewer();
-
-$("photoViewer").classList.add("open");
-
-}
-
-
-function updatePhotoViewer(){
-
-$("bigPhoto").src=
-currentPhotos[currentPhotoIndex];
-
-$("photoCounter").textContent=
-(currentPhotoIndex+1)+
-" / "+
-currentPhotos.length;
-
-}
-
-
-function closePhoto(){
-
-$("photoViewer").classList.remove("open");
-
-}
-
-
-function nextPhoto(){
-
-if(!currentPhotos.length)return;
-
-currentPhotoIndex=
-(currentPhotoIndex+1)%
-currentPhotos.length;
-
-updatePhotoViewer();
-
-}
-
-
-function previousPhoto(){
-
-if(!currentPhotos.length)return;
-
-currentPhotoIndex=
-(currentPhotoIndex-1+currentPhotos.length)%
-currentPhotos.length;
-
-updatePhotoViewer();
-
-}
-
-
-/* TEILEN */
-
-async function shareTour(){
-
-let t=tours.find(
+let t=
+tours.find(
 x=>String(x.id)===String(currentDetailId)
 );
 
 if(!t)return;
 
-try{
+let url=
+safeUrl(t.parking_link);
 
-let shareImage=
-await createShareCard(t);
+if(!url)return;
 
-let response=await fetch(shareImage);
-
-let blob=await response.blob();
-
-let file=new File(
-[blob],
-"berg-tour.png",
-{type:"image/png"}
+window.open(
+url,
+"_blank"
 );
 
+}
+
+
+function openImage(src){
+
+if(!src)return;
+
+$("largeImage").src=src;
+
+$("imageModal").classList.add("open");
+
+}
+
+
+function closeImage(){
+
+$("imageModal").classList.remove("open");
+
+$("largeImage").src="";
+
+}
+
+
+async function shareTour(){
+
+let t=
+tours.find(
+x=>String(x.id)===String(currentDetailId)
+);
+
+if(!t)return;
+
+
 let text=
-"🏔️ "+(t.title||"Bergtour")+
-"\nMeine Bergtour";
+"🏔️ "+
+(t.title||"Bergtour")+
+"\n\n";
+
+
+if(t.place)
+text+="📍 Ort: "+t.place+"\n";
+
+if(t.parking)
+text+="🅿️ Parkplatz: "+t.parking+"\n";
+
+if(t.parking_link)
+text+="🗺️ Parkplatz in Google Maps: "+
+t.parking_link+"\n";
+
+if(t.drive)
+text+="🚗 Fahrzeit: "+t.drive+"\n";
+
+if(t.elev)
+text+="⬆️ HM zum Gehen: "+t.elev+" HM\n";
+
+if(t.total_elev)
+text+="⛰️ Gesamthöhenmeter: "+
+t.total_elev+" HM\n";
+
+if(t.tour_time)
+text+="🥾 Gehzeit: "+t.tour_time+"\n";
+
+if(t.km)
+text+="📏 Strecke: "+t.km+" km\n";
+
+if(t.difficulty)
+text+="⭐ Schwierigkeit: "+t.difficulty+"\n";
+
+if(t.tour_date)
+text+="📅 Begehungsdatum: "+
+new Date(
+t.tour_date+"T12:00:00"
+).toLocaleDateString("de-DE")+"\n";
+
+if(t.description)
+text+="\n📝 "+t.description+"\n";
+
+if(t.outdooractive)
+text+="\n🗺️ Outdooractive: "+
+t.outdooractive;
+
+
+let images=[];
+
+if(t.cover){
+images.push(t.cover);
+}
+
+if(Array.isArray(t.photos)){
+images=[
+...images,
+...t.photos
+];
+}
+
+images=[
+...new Set(images)
+];
+
+
+try{
+
+let files=[];
+
+
+for(let i=0;i<images.length;i++){
+
+try{
+
+let response=
+await fetch(images[i]);
+
+let blob=
+await response.blob();
+
+let extension=
+(blob.type||"image/jpeg")
+.split("/")[1]||
+"jpg";
+
+files.push(
+new File(
+[blob],
+"berg-tour-"+(i+1)+"."+extension,
+{
+type:
+blob.type||
+"image/jpeg"
+}
+)
+);
+
+}catch(error){
+
+console.log(
+"Bild konnte nicht vorbereitet werden",
+error
+);
+
+}
+
+}
+
 
 if(
+files.length &&
 navigator.share &&
 navigator.canShare &&
-navigator.canShare({files:[file]})
+navigator.canShare({
+files:files
+})
 ){
 
 await navigator.share({
 
-title:t.title||"Meine Bergtour",
+title:
+t.title||
+"Meine Bergtour",
 
 text:text,
 
-files:[file]
+files:files
 
 });
 
-}else{
+return;
 
-let link=document.createElement("a");
+}
 
-link.href=shareImage;
 
-link.download="berg-tour.png";
+if(navigator.share){
 
-link.click();
+await navigator.share({
+
+title:
+t.title||
+"Meine Bergtour",
+
+text:text
+
+});
+
+return;
+
+}
+
+
+if(navigator.clipboard){
+
+await navigator.clipboard.writeText(text);
 
 alert(
-"Die Tourkarte wurde erstellt. Du kannst sie jetzt teilen."
+"Die Tourdaten wurden in die Zwischenablage kopiert."
 );
 
 }
 
 }catch(error){
 
-console.error(error);
+console.log(error);
+
+if(error.name!=="AbortError"){
 
 alert(
 "Die Tour konnte nicht geteilt werden."
@@ -1213,389 +1522,336 @@ alert(
 
 }
 
+}
 
-/* TOURKARTE */
 
-async function createShareCard(t){
+async function toggle(id){
 
-let canvas=document.createElement("canvas");
+let t=
+tours.find(
+x=>String(x.id)===String(id)
+);
 
-let width=1080;
+if(!t)return;
 
-let padding=55;
+let newStatus=
+t.status==="done"?
+"planned":
+"done";
 
-let lineHeight=38;
 
-let images=t.photos||[];
+let update={
 
-let loadedImages=[];
+status:newStatus,
 
-for(let src of images){
+tour_date:
+newStatus==="done"?
+(
+t.tour_date||
+new Date()
+.toISOString()
+.slice(0,10)
+):
+null
+
+};
+
 
 try{
 
-let img=await loadImage(src);
+setConnection(
+"☁️ Änderung wird gespeichert..."
+);
 
-loadedImages.push(img);
+let response=
+await fetch(
 
-}catch(e){}
+API+
+"?id=eq."+
+encodeURIComponent(id),
+
+{
+
+method:"PATCH",
+
+headers:{
+...headers(),
+"Prefer":
+"return=minimal"
+},
+
+body:
+JSON.stringify(update)
 
 }
 
-let columns=loadedImages.length<=2?
-1:
-2;
+);
 
-let imageSize=
-columns===1?
-430:
-300;
 
-let rows=
-loadedImages.length?
-Math.ceil(loadedImages.length/columns):
-0;
+if(!response.ok){
 
-let imageHeight=
-rows?
-rows*(imageSize+18):
-0;
-
-let textLines=[];
-
-function add(label,value){
-
-if(value!==undefined &&
-value!==null &&
-String(value).trim()!==""){
-
-textLines.push(
-label+" "+String(value)
+throw new Error(
+await response.text()
 );
 
 }
 
-}
+await loadTours();
 
-add("📍 Ort:",t.place);
-add("🅿️ Parkplatz:",t.parking);
-add("🚗 Fahrzeit:",t.drive);
-add("⬆️ HM zum Gehen:",t.elev+" HM");
-add("⛰️ Gesamthöhenmeter:",t.total_elev+" HM");
-add("🥾 Gehzeit:",t.tour_time);
-add("📏 Strecke:",t.km+" km");
-add("⭐ Schwierigkeit:",t.difficulty);
+}catch(error){
 
-if(t.tour_date){
+console.error(error);
 
-add(
-"📅 Begehungsdatum:",
-new Date(
-t.tour_date+"T12:00:00"
-).toLocaleDateString("de-DE")
+alert(
+"Änderung konnte nicht gespeichert werden."
 );
 
 }
 
-let description=t.description||"";
+}
 
-let descriptionLines=
-wrapText(
-description,
-48
+
+async function removeTour(id){
+
+if(!confirm(
+"Tour wirklich löschen?"
+))return;
+
+
+try{
+
+setConnection(
+"☁️ Tour wird gelöscht..."
 );
 
-let links=[];
+await deleteTour(id);
 
-if(t.parking_link)
-links.push("🗺️ Google Maps: "+t.parking_link);
+await loadTours();
 
-if(t.outdooractive)
-links.push("🗺️ Outdooractive: "+t.outdooractive);
+}catch(error){
 
-let topHeight=
-190+
-(textLines.length*lineHeight)+
-(descriptionLines.length*30)+
-(links.length*30)+
-40;
+console.error(error);
 
-let height=
-topHeight+
-imageHeight+
-70;
-
-canvas.width=width;
-canvas.height=Math.max(height,700);
-
-let ctx=canvas.getContext("2d");
-
-ctx.fillStyle="#ffffff";
-
-ctx.fillRect(
-0,
-0,
-width,
-canvas.height
+alert(
+"Tour konnte nicht gelöscht werden."
 );
 
-/* Kopf */
+}
 
-ctx.fillStyle="#204c3b";
+}
 
-ctx.fillRect(
-0,
-0,
-width,
-150
+
+/* WICHTIG:
+   Beim Antippen wird jetzt die DETAILANSICHT
+   geöffnet – NICHT das Bearbeitungsfenster.
+*/
+
+function openTourFromCard(event){
+
+if(
+event.target.closest("button")||
+event.target.closest("a")
+){
+
+return;
+
+}
+
+let card=
+event.currentTarget;
+
+let id=
+card.getAttribute("data-id");
+
+if(!id)return;
+
+openDetail(id);
+
+}
+
+
+function render(){
+
+$("planned").textContent=
+tours.filter(
+t=>t.status==="planned"
+).length;
+
+
+$("done").textContent=
+tours.filter(
+t=>t.status==="done"
+).length;
+
+
+$("hm").textContent=
+tours.reduce(
+(a,t)=>
+a+(+t.elev||0),
+0
+).toLocaleString("de-DE");
+
+
+let arr=
+tours.filter(
+t=>
+filter==="all"||
+t.status===filter
 );
 
-ctx.fillStyle="#ffffff";
 
-ctx.font="bold 46px system-ui";
+$("list").innerHTML=
+arr.length?
 
-ctx.fillText(
-"🏔️ "+(t.title||"Bergtour"),
-padding,
-70
+arr.map(t=>{
+
+let image=
+t.cover||
+t.photos?.[0]||
+"";
+
+
+let tourId=
+String(t.id).replace(
+/"/g,
+"&quot;"
 );
 
-ctx.font="24px system-ui";
 
-ctx.fillText(
+return `
+
+<article
+class="card"
+data-id="${tourId}"
+onclick="openTourFromCard(event)"
+>
+
+
+${
+image?
+
+`<img
+src="${image}"
+alt="${esc(t.title)}"
+>`
+
+:""
+}
+
+
+<span class="badge">
+
+${
 t.status==="done"?
 "✅ Erledigt":
-"🥾 Geplant",
-padding,
-112
-);
-
-/* Daten */
-
-ctx.fillStyle="#20342b";
-
-let y=205;
-
-ctx.font="25px system-ui";
-
-for(let line of textLines){
-
-ctx.fillText(
-line,
-padding,
-y
-);
-
-y+=lineHeight;
-
+"🥾 Geplant"
 }
 
-/* Beschreibung */
+</span>
 
-if(description){
 
-y+=10;
+<h3>
+${esc(t.title)}
+</h3>
 
-ctx.font="bold 27px system-ui";
 
-ctx.fillText(
-"📝 Beschreibung",
-padding,
-y
-);
+${
+t.place?
 
-y+=38;
+`<div class="meta">
+📍 ${esc(t.place)}
+</div>`
 
-ctx.font="22px system-ui";
-
-for(let line of descriptionLines){
-
-ctx.fillText(
-line,
-padding,
-y
-);
-
-y+=30;
-
-}
-
-}
-
-/* Links */
-
-if(links.length){
-
-y+=10;
-
-ctx.font="20px system-ui";
-
-for(let link of links){
-
-let lines=wrapText(link,70);
-
-for(let line of lines){
-
-ctx.fillText(
-line,
-padding,
-y
-);
-
-y+=28;
-
-}
-
-}
-
-}
-
-/* Bilder */
-
-if(loadedImages.length){
-
-y+=25;
-
-let x=padding;
-
-for(let i=0;i<loadedImages.length;i++){
-
-if(
-columns===2 &&
-i%2===0
-){
-
-x=padding;
-
-}
-
-if(
-columns===1
-){
-
-x=padding;
-
-}
-
-let row=
-Math.floor(i/columns);
-
-let col=
-columns===1?
-0:
-i%columns;
-
-x=
-padding+
-col*(imageSize+20);
-
-let imageY=
-y+
-row*(imageSize+18);
-
-drawCoverImage(
-ctx,
-loadedImages[i],
-x,
-imageY,
-imageSize,
-imageSize
-);
-
-}
-
-}
-
-/* Fuß */
-
-ctx.fillStyle="#718a73";
-
-ctx.font="18px system-ui";
-
-ctx.fillText(
-"Meine Bergtouren",
-padding,
-canvas.height-25
-);
-
-return canvas.toDataURL("image/png");
-
+:""
 }
 
 
-function loadImage(src){
+${
+t.parking?
 
-return new Promise((resolve,reject)=>{
+`<div class="meta">
+🅿️ ${esc(t.parking)}
+</div>`
 
-let img=new Image();
-
-img.onload=()=>resolve(img);
-
-img.onerror=reject;
-
-img.src=src;
-
-});
-
+:""
 }
 
 
-function drawCoverImage(
-ctx,
-img,
-x,
-y,
-w,
-h
-){
+<div class="info">
 
-let scale=Math.max(
-w/img.width,
-h/img.height
-);
+<div class="meta">
+🚗 <b>Fahrzeit:</b>
+${t.drive?esc(t.drive):"nicht angegeben"}
+</div>
 
-let nw=img.width*scale;
-let nh=img.height*scale;
+<div class="meta">
+⬆️ <b>HM zum Gehen:</b>
+${t.elev||0} HM
+</div>
 
-let dx=x+(w-nw)/2;
-let dy=y+(h-nh)/2;
+<div class="meta">
+⛰️ <b>Gesamthöhenmeter:</b>
+${t.total_elev||0} HM
+</div>
 
-ctx.save();
+<div class="meta">
+🥾 <b>Gehzeit:</b>
+${t.tour_time?esc(t.tour_time):"nicht angegeben"}
+</div>
 
-ctx.beginPath();
+<div class="meta">
+📏 <b>Strecke:</b>
+${t.km||0} km
+</div>
 
-ctx.roundRect(
-x,
-y,
-w,
-h,
-14
-);
+<div class="meta">
+⭐ <b>Schwierigkeit:</b>
+${esc(t.difficulty||"mittel")}
+</div>
 
-ctx.clip();
+</div>
 
-ctx.drawImage(
-img,
-dx,
-dy,
-nw,
-nh
-);
 
-ctx.restore();
+<p>
+${esc(
+t.description||
+"Keine Beschreibung"
+)}
+</p>
 
+
+<div class="toolbar">
+
+<button
+class="btn"
+onclick="
+event.stopPropagation();
+toggle('${tourId}')
+"
+>
+
+${
+t.status==="done"?
+"↩ Wieder planen":
+"✅ Als gegangen markieren"
 }
 
+</button>
 
-function wrapText(text,max){
 
-let words=String(text).split(/\s+/);
+<button
+class="btn alt"
+onclick="
+event.stopPropagation();
+openModal('${tourId}')
+"
+>
 
-let lines=[];
-let line="";
+✏️ Bearbeiten
 
-for(let word of words){
+</button>
 
-if((line+" "+word).trim().length>max){
 
-if(l
+<button
+class="btn red"
+  
