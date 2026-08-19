@@ -4,46 +4,225 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Meine Bergtouren</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f3f6f3;color:#20342b}
-header{padding:28px 20px 34px;color:#fff;background:linear-gradient(135deg,#204c3b,#718a73);border-radius:0 0 28px 28px}
-main{max-width:900px;margin:auto;padding:18px}
-h1{margin:0 0 5px;font-size:29px}
+
+body{
+margin:0;
+font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+background:#f3f6f3;
+color:#20342b
+}
+
+header{
+padding:28px 20px 34px;
+color:#fff;
+background:linear-gradient(135deg,#204c3b,#718a73);
+border-radius:0 0 28px 28px
+}
+
+main{
+max-width:900px;
+margin:auto;
+padding:18px
+}
+
+h1{
+margin:0 0 5px;
+font-size:29px
+}
+
 .muted{opacity:.85}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:-8px}
-.stat,.card,.modalbox{background:#fff;border-radius:18px;padding:16px;box-shadow:0 3px 16px #0001}
-.stat b{font-size:22px;display:block}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:-8px
+}
+
+.stat,.card,.modalbox{
+background:#fff;
+border-radius:18px;
+padding:16px;
+box-shadow:0 3px 16px #0001
+}
+
+.stat b{
+font-size:22px;
+display:block
+}
+
 .stat small{color:#718078}
-.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}
-.btn{border:0;border-radius:12px;padding:11px 15px;background:#2f6751;color:#fff;font-weight:700;cursor:pointer}
-.btn.alt{background:#e4ece7;color:#2d4b3d}
-.btn.red{background:#b84b4b;color:#fff}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
-.card{cursor:pointer}
-.card img{width:100%;height:180px;object-fit:cover;border-radius:12px;margin-bottom:10px}
-.card h3{margin:8px 0 5px}
-.meta{font-size:13px;color:#66756c;margin:7px 0}
-.badge{display:inline-block;border-radius:99px;padding:5px 9px;background:#e7f1eb;color:#286044;font-size:12px;font-weight:700}
+
+.toolbar{
+display:flex;
+gap:9px;
+flex-wrap:wrap;
+margin:18px 0
+}
+
+.btn{
+border:0;
+border-radius:12px;
+padding:11px 15px;
+background:#2f6751;
+color:#fff;
+font-weight:700;
+cursor:pointer
+}
+
+.btn.alt{
+background:#e4ece7;
+color:#2d4b3d
+}
+
+.btn.red{
+background:#b84b4b;
+color:#fff
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+gap:14px
+}
+
+.card{
+cursor:pointer
+}
+
+.card img{
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:12px;
+margin-bottom:10px
+}
+
+.card h3{
+margin:8px 0 5px
+}
+
+.meta{
+font-size:13px;
+color:#66756c;
+margin:7px 0
+}
+
+.badge{
+display:inline-block;
+border-radius:99px;
+padding:5px 9px;
+background:#e7f1eb;
+color:#286044;
+font-size:12px;
+font-weight:700
+}
+
 .card p{line-height:1.45}
-.empty{text-align:center;padding:35px;color:#738078}
-.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+
+.empty{
+text-align:center;
+padding:35px;
+color:#738078
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:#0008;
+display:none;
+align-items:center;
+justify-content:center;
+padding:16px;
+z-index:10
+}
+
 .modal.open{display:flex}
-.modalbox{max-width:540px;width:100%;max-height:92vh;overflow:auto}
+
+.modalbox{
+max-width:540px;
+width:100%;
+max-height:92vh;
+overflow:auto
+}
+
 .close{float:right}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-label{display:block;font-weight:700;font-size:13px;margin:12px 0 5px}
-input,textarea,select{width:100%;padding:11px;border:1px solid #ccd6d0;border-radius:10px;font:inherit}
+
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
+label{
+display:block;
+font-weight:700;
+font-size:13px;
+margin:12px 0 5px
+}
+
+input,textarea,select{
+width:100%;
+padding:11px;
+border:1px solid #ccd6d0;
+border-radius:10px;
+font:inherit
+}
+
 textarea{min-height:85px}
-.link{color:#2f6751;font-weight:700}
-.info{background:#f0f5f1;border-radius:12px;padding:10px;margin:10px 0}
-.status{text-align:center;padding:8px;border-radius:10px;background:#eef4ef;margin:10px 0;font-size:13px}
-.gallery{display:flex;gap:7px;overflow:auto;margin-top:8px}
-.gallery img{width:70px;height:70px;object-fit:cover;border-radius:8px}
+
+.link{
+color:#2f6751;
+font-weight:700
+}
+
+.info{
+background:#f0f5f1;
+border-radius:12px;
+padding:10px;
+margin:10px 0
+}
+
+.status{
+text-align:center;
+padding:8px;
+border-radius:10px;
+background:#eef4ef;
+margin:10px 0;
+font-size:13px
+}
+
+.gallery{
+display:flex;
+gap:7px;
+overflow:auto;
+margin-top:8px
+}
+
+.gallery img{
+width:70px;
+height:70px;
+object-fit:cover;
+border-radius:8px
+}
+
 @media(max-width:520px){
-.stats{grid-template-columns:1fr 1fr}
-.stat:last-child{grid-column:span 2}
-.row{grid-template-columns:1fr}
+
+.stats{
+grid-template-columns:1fr 1fr
+}
+
+.stat:last-child{
+grid-column:span 2
+}
+
+.row{
+grid-template-columns:1fr
+}
+
 }
 </style>
 </head>
@@ -57,29 +236,61 @@ textarea{min-height:85px}
 
 <main>
 
-<div id="connection" class="status">☁️ Verbindung wird hergestellt...</div>
+<div id="connection" class="status">
+☁️ Verbindung wird hergestellt...
+</div>
 
 <div class="stats">
-<div class="stat"><b id="planned">0</b><small>Geplant</small></div>
-<div class="stat"><b id="done">0</b><small>Erledigt</small></div>
-<div class="stat"><b id="hm">0</b><small>Höhenmeter gesamt</small></div>
+
+<div class="stat">
+<b id="planned">0</b>
+<small>Geplant</small>
+</div>
+
+<div class="stat">
+<b id="done">0</b>
+<small>Erledigt</small>
+</div>
+
+<div class="stat">
+<b id="hm">0</b>
+<small>Höhenmeter gesamt</small>
+</div>
+
 </div>
 
 <div class="toolbar">
-<button class="btn" onclick="openModal()">＋ Tour hinzufügen</button>
-<button class="btn alt" onclick="filter='all';render()">Alle</button>
-<button class="btn alt" onclick="filter='planned';render()">Geplant</button>
-<button class="btn alt" onclick="filter='done';render()">Erledigt</button>
+
+<button class="btn" onclick="openModal()">
+＋ Tour hinzufügen
+</button>
+
+<button class="btn alt" onclick="filter='all';render()">
+Alle
+</button>
+
+<button class="btn alt" onclick="filter='planned';render()">
+Geplant
+</button>
+
+<button class="btn alt" onclick="filter='done';render()">
+Erledigt
+</button>
+
 </div>
 
 <div id="list" class="grid"></div>
 
 </main>
 
+
 <div id="modal" class="modal">
+
 <div class="modalbox">
 
-<button class="btn alt close" onclick="closeModal()">Schließen</button>
+<button class="btn alt close" onclick="closeModal()">
+Schließen
+</button>
 
 <h2 id="modalTitle">Neue Bergtour</h2>
 
@@ -97,6 +308,7 @@ textarea{min-height:85px}
 <input id="place" placeholder="z. B. Ramsau bei Berchtesgaden">
 
 <div class="row">
+
 <div>
 <label>Fahrzeit</label>
 <input id="drive" placeholder="z. B. 35 Min.">
@@ -106,9 +318,11 @@ textarea{min-height:85px}
 <label>HM zum Gehen</label>
 <input id="elev" type="number" placeholder="z. B. 850">
 </div>
+
 </div>
 
 <div class="row">
+
 <div>
 <label>Gesamthöhenmeter vom Berg</label>
 <input id="totalElev" type="number" placeholder="z. B. 1350">
@@ -118,9 +332,11 @@ textarea{min-height:85px}
 <label>Gehzeit</label>
 <input id="time" placeholder="z. B. 5:30 h">
 </div>
+
 </div>
 
 <div class="row">
+
 <div>
 <label>Entfernung (km)</label>
 <input id="km" type="number" step=".1">
@@ -128,12 +344,15 @@ textarea{min-height:85px}
 
 <div>
 <label>Schwierigkeit</label>
+
 <select id="difficulty">
 <option>leicht</option>
 <option selected>mittel</option>
 <option>schwer</option>
 </select>
+
 </div>
+
 </div>
 
 <label>Outdooractive-Link</label>
@@ -146,64 +365,112 @@ textarea{min-height:85px}
 <input id="photos" type="file" accept="image/*" multiple>
 
 <label>Status</label>
+
 <select id="status">
-<option value="planned">🥾 Geplant</option>
-<option value="done">✅ Bereits gegangen</option>
+
+<option value="planned">
+🥾 Geplant
+</option>
+
+<option value="done">
+✅ Bereits gegangen
+</option>
+
 </select>
 
 <label>Begehungsdatum</label>
 <input id="date" type="date">
 
 <br><br>
-<button class="btn" type="submit">💾 Tour speichern</button>
+
+<button class="btn" type="submit">
+💾 Tour speichern
+</button>
 
 </form>
+
 </div>
 </div>
+
 
 <script>
 
 const SUPABASE_URL="https://wklyvofseereubtelpha.supabase.co";
+
 const SUPABASE_KEY="sb_publishable_TvoavcCRENtHJwBuXpp1tg_E9WsbMZx";
 
 const API=SUPABASE_URL+"/rest/v1/touren";
 
 let tours=[];
+
 let filter="all";
 
 const $=id=>document.getElementById(id);
 
+
 function headers(){
-return {
+
+return{
+
 "apikey":SUPABASE_KEY,
+
 "Authorization":"Bearer "+SUPABASE_KEY,
+
 "Content-Type":"application/json"
+
 };
+
 }
+
 
 function setConnection(text,ok=true){
+
 $("connection").textContent=text;
-$("connection").style.background=ok?"#eef4ef":"#fbeaea";
+
+$("connection").style.background=
+ok?"#eef4ef":"#fbeaea";
+
 }
 
+
 function esc(s){
+
 return String(s??"").replace(/[&<>"']/g,c=>({
+
 "&":"&amp;",
 "<":"&lt;",
 ">":"&gt;",
 '"':"&quot;",
 "'":"&#039;"
+
 }[c]));
+
 }
 
+
 function safeUrl(url){
+
 if(!url)return "";
+
 try{
+
 let u=new URL(url);
-if(u.protocol==="https:"||u.protocol==="http:")return esc(url);
-}catch(e){}
-return "";
+
+if(
+u.protocol==="https:"||
+u.protocol==="http:"
+){
+
+return esc(url);
+
 }
+
+}catch(e){}
+
+return "";
+
+}
+
 
 async function loadTours(){
 
@@ -211,17 +478,24 @@ try{
 
 setConnection("☁️ Touren werden geladen...");
 
-let response=await fetch(API+"?select=*&order=created_at.desc",{
+let response=await fetch(
+API+"?select=*&order=created_at.desc",
+{
 headers:headers()
-});
+}
+);
 
 if(!response.ok){
+
 throw new Error(await response.text());
+
 }
 
 tours=await response.json();
 
-setConnection("☁️ Mit der Bergtouren-Datenbank verbunden");
+setConnection(
+"☁️ Mit der Bergtouren-Datenbank verbunden"
+);
 
 render();
 
@@ -229,17 +503,29 @@ render();
 
 console.error(error);
 
-setConnection("❌ Verbindung zur Datenbank fehlgeschlagen",false);
+setConnection(
+"❌ Verbindung zur Datenbank fehlgeschlagen",
+false
+);
 
 $("list").innerHTML=`
+
 <div class="empty">
-Die Touren konnten nicht geladen werden.<br><br>
+
+Die Touren konnten nicht geladen werden.
+
+<br><br>
+
 Bitte überprüfe die Supabase-Einstellungen.
-</div>`;
+
+</div>
+
+`;
 
 }
 
 }
+
 
 async function saveTour(tour){
 
@@ -247,48 +533,69 @@ let response;
 
 if(tour.id){
 
-response=await fetch(API+"?id=eq."+encodeURIComponent(tour.id),{
+response=await fetch(
+API+"?id=eq."+encodeURIComponent(tour.id),
+{
 method:"PATCH",
+
 headers:{
 ...headers(),
 "Prefer":"return=representation"
 },
+
 body:JSON.stringify(tour)
-});
+
+}
+);
 
 }else{
 
-response=await fetch(API,{
+response=await fetch(
+API,
+{
 method:"POST",
+
 headers:{
 ...headers(),
 "Prefer":"return=representation"
 },
+
 body:JSON.stringify(tour)
-});
+
+}
+);
 
 }
 
 if(!response.ok){
+
 throw new Error(await response.text());
+
 }
 
 return await response.json();
 
 }
 
+
 async function deleteTour(id){
 
-let response=await fetch(API+"?id=eq."+encodeURIComponent(id),{
+let response=await fetch(
+API+"?id=eq."+encodeURIComponent(id),
+{
 method:"DELETE",
 headers:headers()
-});
+}
+);
 
 if(!response.ok){
+
 throw new Error(await response.text());
+
 }
 
 }
+
 
 function openModal(id=null){
 
@@ -298,47 +605,77 @@ $("form").reset();
 
 $("editId").value="";
 
-$("modalTitle").textContent=id?
+$("modalTitle").textContent=
+id?
 "Tour bearbeiten":
 "Neue Bergtour";
 
+
 if(id){
 
-let t=tours.find(x=>String(x.id)===String(id));
+let t=tours.find(
+x=>String(x.id)===String(id)
+);
 
 if(!t)return;
 
 $("editId").value=t.id;
+
 $("title").value=t.title||"";
+
 $("place").value=t.place||"";
+
 $("drive").value=t.drive||"";
+
 $("elev").value=t.elev||"";
+
 $("totalElev").value=t.total_elev||"";
+
 $("time").value=t.tour_time||"";
+
 $("km").value=t.km||"";
-$("difficulty").value=t.difficulty||"mittel";
-$("oa").value=t.outdooractive||"";
-$("desc").value=t.description||"";
-$("status").value=t.status||"planned";
-$("date").value=t.tour_date||"";
+
+$("difficulty").value=
+t.difficulty||"mittel";
+
+$("oa").value=
+t.outdooractive||"";
+
+$("desc").value=
+t.description||"";
+
+$("status").value=
+t.status||"planned";
+
+$("date").value=
+t.tour_date||"";
 
 }
 
 }
+
 
 function closeModal(){
+
 $("modal").classList.remove("open");
+
 $("form").reset();
+
 $("editId").value="";
+
 }
+
 
 function readFile(file){
 
 return new Promise(resolve=>{
 
 if(!file){
+
 resolve("");
+
 return;
+
 }
 
 let reader=new FileReader();
@@ -353,6 +690,7 @@ reader.readAsDataURL(file);
 
 }
 
+
 async function readPhotos(){
 
 return Promise.all(
@@ -361,6 +699,7 @@ return Promise.all(
 
 }
 
+
 $("form").onsubmit=async e=>{
 
 e.preventDefault();
@@ -368,6 +707,7 @@ e.preventDefault();
 let button=e.submitter;
 
 button.disabled=true;
+
 button.textContent="⏳ Speichern...";
 
 try{
@@ -375,20 +715,33 @@ try{
 let id=$("editId").value;
 
 let old=id?
-tours.find(x=>String(x.id)===String(id)):
+tours.find(
+x=>String(x.id)===String(id)
+):
 null;
 
 let cover=old?.cover||"";
 
 if($("cover").files[0]){
-cover=await readFile($("cover").files[0]);
+
+cover=await readFile(
+$("cover").files[0]
+);
+
 }
 
 let photos=old?.photos||[];
 
 if($("photos").files.length){
-let newPhotos=await readPhotos();
-photos=[...photos,...newPhotos];
+
+let newPhotos=
+await readPhotos();
+
+photos=[
+...photos,
+...newPhotos
+];
+
 }
 
 let tour={
@@ -424,7 +777,9 @@ photos:photos
 };
 
 if(id){
+
 tour.id=id;
+
 }
 
 await saveTour(tour);
@@ -437,49 +792,80 @@ closeModal();
 
 console.error(error);
 
-alert("Die Tour konnte nicht gespeichert werden.\n\n"+error.message);
+alert(
+"Die Tour konnte nicht gespeichert werden.\n\n"+
+error.message
+);
 
 }
 
 button.disabled=false;
+
 button.textContent="💾 Tour speichern";
 
 };
 
+
 async function toggle(id){
 
-let t=tours.find(x=>String(x.id)===String(id));
+let t=tours.find(
+x=>String(x.id)===String(id)
+);
 
 if(!t)return;
 
-let newStatus=t.status==="done"?"planned":"done";
+let newStatus=
+t.status==="done"?
+"planned":
+"done";
 
 let update={
+
 status:newStatus,
+
 tour_date:
 newStatus==="done"?
-(t.tour_date||new Date().toISOString().slice(0,10)):
+(
+t.tour_date||
+new Date()
+.toISOString()
+.slice(0,10)
+):
 null
+
 };
 
 try{
 
-setConnection("☁️ Änderung wird gespeichert...");
+setConnection(
+"☁️ Änderung wird gespeichert..."
+);
 
 let response=await fetch(
+
 API+"?id=eq."+encodeURIComponent(id),
+
 {
+
 method:"PATCH",
+
 headers:{
 ...headers(),
 "Prefer":"return=minimal"
 },
+
 body:JSON.stringify(update)
+
 }
+
 );
 
 if(!response.ok){
-throw new Error(await response.text());
+
+throw new Error(
+await response.text()
+);
+
 }
 
 await loadTours();
@@ -488,19 +874,26 @@ await loadTours();
 
 console.error(error);
 
-alert("Änderung konnte nicht gespeichert werden.");
+alert(
+"Änderung konnte nicht gespeichert werden."
+);
 
 }
 
 }
+
 
 async function removeTour(id){
 
-if(!confirm("Tour wirklich löschen?"))return;
+if(!confirm(
+"Tour wirklich löschen?"
+))return;
 
 try{
 
-setConnection("☁️ Tour wird gelöscht...");
+setConnection(
+"☁️ Tour wird gelöscht..."
+);
 
 await deleteTour(id);
 
@@ -510,133 +903,316 @@ await loadTours();
 
 console.error(error);
 
-alert("Tour konnte nicht gelöscht werden.");
+alert(
+"Tour konnte nicht gelöscht werden."
+);
 
 }
 
 }
+
+
+/* NEUE ÖFFNEN-FUNKTION */
+
+function openTourFromCard(event){
+
+if(
+event.target.closest("button")||
+event.target.closest("a")
+){
+
+return;
+
+}
+
+let card=
+event.currentTarget;
+
+let id=
+card.getAttribute("data-id");
+
+if(!id){
+
+console.error(
+"Keine Tour-ID gefunden"
+);
+
+return;
+
+}
+
+openModal(id);
+
+}
+
 
 function render(){
 
 $("planned").textContent=
-tours.filter(t=>t.status==="planned").length;
+tours.filter(
+t=>t.status==="planned"
+).length;
 
 $("done").textContent=
-tours.filter(t=>t.status==="done").length;
+tours.filter(
+t=>t.status==="done"
+).length;
 
 $("hm").textContent=
-tours.reduce((a,t)=>a+(+t.elev||0),0).toLocaleString("de-DE");
+tours.reduce(
+(a,t)=>a+(+t.elev||0),
+0
+).toLocaleString("de-DE");
+
 
 let arr=tours.filter(
-t=>filter==="all"||t.status===filter
+t=>filter==="all"||
+t.status===filter
 );
 
-$("list").innerHTML=arr.length?
+
+$("list").innerHTML=
+arr.length?
 
 arr.map(t=>{
 
-let image=t.cover||t.photos?.[0]||"";
+let image=
+t.cover||
+t.photos?.[0]||
+"";
 
-let oa=safeUrl(t.outdooractive);
+let oa=
+safeUrl(t.outdooractive);
+
+
+/* ID wird sicher als Text gespeichert */
+
+let tourId=
+String(t.id).replace(
+/"/g,
+"&quot;"
+);
+
 
 return `
 
-<article class="card"
-onclick="openModal(${t.id})">
+<article
+class="card"
+data-id="${tourId}"
+onclick="openTourFromCard(event)"
+>
 
 ${image?
-`<img src="${image}" alt="${esc(t.title)}">`
+
+`<img
+src="${image}"
+alt="${esc(t.title)}"
+>`
+
 :""}
 
+
 <span class="badge">
-${t.status==="done"?"✅ Erledigt":"🥾 Geplant"}
+
+${
+t.status==="done"?
+"✅ Erledigt":
+"🥾 Geplant"
+}
+
 </span>
 
-<h3>${esc(t.title)}</h3>
+
+<h3>
+${esc(t.title)}
+</h3>
+
 
 ${t.place?
-`<div class="meta">📍 ${esc(t.place)}</div>`:""}
+
+`<div class="meta">
+📍 ${esc(t.place)}
+</div>`
+
+:""}
+
 
 <div class="info">
 
+
 <div class="meta">
+
 🚗 <b>Fahrzeit:</b>
-${t.drive?esc(t.drive):"nicht angegeben"}
+
+${
+t.drive?
+esc(t.drive):
+"nicht angegeben"
+}
+
 </div>
 
+
 <div class="meta">
+
 ⬆️ <b>HM zum Gehen:</b>
+
 ${t.elev||0} HM
+
 </div>
 
+
 <div class="meta">
+
 ⛰️ <b>Gesamthöhenmeter:</b>
+
 ${t.total_elev||0} HM
+
 </div>
 
+
 <div class="meta">
+
 🥾 <b>Gehzeit:</b>
-${t.tour_time?esc(t.tour_time):"nicht angegeben"}
+
+${
+t.tour_time?
+esc(t.tour_time):
+"nicht angegeben"
+}
+
 </div>
 
+
 <div class="meta">
+
 📏 <b>Strecke:</b>
+
 ${t.km||0} km
+
 </div>
+
 
 <div class="meta">
+
 ⭐ <b>Schwierigkeit:</b>
-${esc(t.difficulty||"mittel")}
-</div>
+
+${esc(
+t.difficulty||"mittel"
+)}
 
 </div>
 
-<p>${esc(t.description||"Keine Beschreibung")}</p>
 
-${t.tour_date?
+</div>
+
+
+<p>
+
+${esc(
+t.description||
+"Keine Beschreibung"
+)}
+
+</p>
+
+
+${
+t.tour_date?
+
 `<div class="meta">
-📅 ${new Date(t.tour_date+"T12:00:00").toLocaleDateString("de-DE")}
-</div>`:""}
 
-${oa?
-`<a class="link"
+📅 ${
+new Date(
+t.tour_date+"T12:00:00"
+).toLocaleDateString("de-DE")
+}
+
+</div>`
+
+:""
+}
+
+
+${
+oa?
+
+`<a
+class="link"
 href="${oa}"
 target="_blank"
 rel="noopener"
-onclick="event.stopPropagation()">
+>
 🗺️ Outdooractive öffnen
-</a>`:""}
+</a>`
 
-${t.photos?.length?
+:""
+}
+
+
+${
+t.photos?.length?
+
 `
+
 <div class="gallery">
+
 ${t.photos.map(p=>`
-<img src="${p}" alt="">
+
+<img
+src="${p}"
+alt=""
+>
+
 `).join("")}
+
 </div>
+
 `
-:""}
+
+:""
+}
+
 
 <div class="toolbar">
 
-<button class="btn"
-onclick="event.stopPropagation();toggle(${t.id})">
-${t.status==="done"?
+
+<button
+class="btn"
+onclick="event.stopPropagation();toggle('${tourId}')"
+>
+
+${
+t.status==="done"?
 "↩ Wieder planen":
-"✅ Als gegangen markieren"}
+"✅ Als gegangen markieren"
+}
+
 </button>
 
-<button class="btn alt"
-onclick="event.stopPropagation();openModal(${t.id})">
+
+<button
+class="btn alt"
+onclick="event.stopPropagation();openModal('${tourId}')"
+>
+
 ✏️ Bearbeiten
+
 </button>
 
-<button class="btn red"
-onclick="event.stopPropagation();removeTour(${t.id})">
+
+<button
+class="btn red"
+onclick="event.stopPropagation();removeTour('${tourId}')"
+>
+
 Löschen
+
 </button>
+
 
 </div>
+
 
 </article>
 
@@ -646,12 +1222,22 @@ Löschen
 
 :
 
-`<div class="empty">
-Noch keine Touren gespeichert.<br>
+`
+
+<div class="empty">
+
+Noch keine Touren gespeichert.
+
+<br>
+
 Füge deine erste Tour hinzu! 🏔️
-</div>`;
+
+</div>
+
+`;
 
 }
+
 
 loadTours();
 
