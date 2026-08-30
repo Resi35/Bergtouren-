@@ -242,7 +242,11 @@ position:relative
 }
 
 .saved-photo img{
-display:block
+display:block;
+width:100%;
+height:100px;
+object-fit:cover;
+border-radius:10px
 }
 
 .delete-photo{
@@ -256,7 +260,8 @@ border:0;
 border-radius:50%;
 background:#b84b4b;
 color:#fff;
-font-size:16px;
+font-size:20px;
+line-height:34px;
 cursor:pointer
 }
 
@@ -323,13 +328,8 @@ grid-template-columns:repeat(3,1fr)
 <body>
 
 <header>
-
 <h1>🏔️ Meine Bergtouren</h1>
-
-<div class="muted">
-Deine persönliche Sammlung von Touren
-</div>
-
+<div class="muted">Deine persönliche Sammlung von Touren</div>
 </header>
 
 <main>
@@ -382,4 +382,1723 @@ Erledigt
 </main>
 
 
-<!-- DETAIL
+<!-- DETAILANSICHT -->
+
+<div id="detailModal" class="modal">
+
+<div class="modalbox">
+
+<button class="btn alt close" onclick="closeDetail()">
+Schließen
+</button>
+
+<div id="detailContent"></div>
+
+</div>
+
+</div>
+
+
+<!-- BEARBEITEN / NEUE TOUR -->
+
+<div id="modal" class="modal">
+
+<div class="modalbox">
+
+<button class="btn alt close" onclick="closeModal()">
+Schließen
+</button>
+
+<h2 id="modalTitle">
+Neue Bergtour
+</h2>
+
+<form id="form">
+
+<input id="editId" type="hidden">
+
+<label>Berg / Tour *</label>
+
+<input
+id="title"
+required
+placeholder="z. B. Hochstaufen"
+>
+
+<label>Titelbild</label>
+
+<input
+id="cover"
+type="file"
+accept="image/*"
+>
+
+<label>Ort des Berges</label>
+
+<input
+id="place"
+placeholder="z. B. Ramsau bei Berchtesgaden"
+>
+
+<label>🅿️ Parkplatz</label>
+
+<input
+id="parking"
+placeholder="z. B. Parkplatz Halswald"
+>
+
+<label>🗺️ Google-Maps-Link zum Parkplatz</label>
+
+<input
+id="parkingLink"
+type="url"
+placeholder="https://maps.google.com/..."
+>
+
+<div class="row">
+
+<div>
+
+<label>Fahrzeit</label>
+
+<input
+id="drive"
+placeholder="z. B. 35 Min."
+>
+
+</div>
+
+<div>
+
+<label>HM zum Gehen</label>
+
+<input
+id="elev"
+type="number"
+placeholder="z. B. 850"
+>
+
+</div>
+
+</div>
+
+<div class="row">
+
+<div>
+
+<label>Gesamthöhenmeter vom Berg</label>
+
+<input
+id="totalElev"
+type="number"
+placeholder="z. B. 1350"
+>
+
+</div>
+
+<div>
+
+<label>Gehzeit</label>
+
+<input
+id="time"
+placeholder="z. B. 5:30 h"
+>
+
+</div>
+
+</div>
+
+<div class="row">
+
+<div>
+
+<label>Entfernung (km)</label>
+
+<input
+id="km"
+type="number"
+step=".1"
+>
+
+</div>
+
+<div>
+
+<label>Schwierigkeit</label>
+
+<select id="difficulty">
+
+<option>leicht</option>
+<option selected>mittel</option>
+<option>schwer</option>
+
+</select>
+
+</div>
+
+</div>
+
+<label>Outdooractive-Link</label>
+
+<input
+id="oa"
+type="url"
+placeholder="https://www.outdooractive.com/..."
+>
+
+<label>Beschreibung</label>
+
+<textarea
+id="desc"
+placeholder="Besonderheiten, Hinweise usw."
+></textarea>
+
+<label>Weitere Fotos</label>
+
+<input
+id="photos"
+type="file"
+accept="image/*"
+multiple
+>
+
+<div id="savedPhotos"></div>
+
+<label>Status</label>
+
+<select id="status">
+
+<option value="planned">
+🥾 Geplant
+</option>
+
+<option value="done">
+✅ Bereits gegangen
+</option>
+
+</select>
+
+<label>Begehungsdatum</label>
+
+<input
+id="date"
+type="date"
+>
+
+<br><br>
+
+<button
+class="btn"
+type="submit"
+>
+💾 Tour speichern
+</button>
+
+</form>
+
+</div>
+</div>
+
+
+<!-- GROSSES BILD -->
+
+<div
+id="imageModal"
+class="image-modal"
+onclick="closeImage()"
+>
+
+<button
+class="image-close"
+onclick="event.stopPropagation();closeImage()"
+>
+×
+</button>
+
+<img
+id="largeImage"
+src=""
+alt=""
+>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL=
+"https://wklyvofseereubtelpha.supabase.co";
+
+const SUPABASE_KEY=
+"sb_publishable_TvoavcCRENtHJwBuXpp1tg_E9WsbMZx";
+
+const API=
+SUPABASE_URL+"/rest/v1/touren";
+
+let tours=[];
+
+let filter="all";
+
+let currentDetailId=null;
+
+const $=
+id=>document.getElementById(id);
+
+
+/* SUPABASE HEADER */
+
+function headers(){
+
+return{
+
+"apikey":SUPABASE_KEY,
+
+"Content-Type":"application/json"
+
+};
+
+}
+
+
+/* VERBINDUNGSSTATUS */
+
+function setConnection(text,ok=true){
+
+$("connection").textContent=text;
+
+$("connection").style.background=
+ok?"#eef4ef":"#fbeaea";
+
+}
+
+
+/* SICHERHEIT */
+
+function esc(s){
+
+return String(s??"").replace(
+/[&<>"']/g,
+c=>({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+
+}[c])
+);
+
+}
+
+
+function safeUrl(url){
+
+if(!url)return "";
+
+try{
+
+let u=new URL(url);
+
+if(
+u.protocol==="https:"||
+u.protocol==="http:"
+){
+
+return esc(url);
+
+}
+
+}catch(e){}
+
+return "";
+
+}
+
+
+/* TOUREN LADEN */
+
+async function loadTours(){
+
+try{
+
+setConnection(
+"☁️ Touren werden geladen..."
+);
+
+let response=
+await fetch(
+API+"?select=*&order=created_at.desc",
+{
+headers:headers()
+}
+);
+
+if(!response.ok){
+
+throw new Error(
+await response.text()
+);
+
+}
+
+tours=
+await response.json();
+
+setConnection(
+"☁️ Mit der Bergtouren-Datenbank verbunden"
+);
+
+render();
+
+}catch(error){
+
+console.error(error);
+
+setConnection(
+"❌ Verbindung zur Datenbank fehlgeschlagen",
+false
+);
+
+$("list").innerHTML=`
+
+<div class="empty">
+
+Die Touren konnten nicht geladen werden.
+
+<br><br>
+
+Bitte überprüfe die Supabase-Einstellungen.
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* TOUR SPEICHERN */
+
+async function saveTour(tour){
+
+let response;
+
+if(tour.id){
+
+response=
+await fetch(
+API+"?id=eq."+
+encodeURIComponent(tour.id),
+{
+
+method:"PATCH",
+
+headers:{
+...headers(),
+"Prefer":"return=representation"
+},
+
+body:JSON.stringify(tour)
+
+}
+);
+
+}else{
+
+response=
+await fetch(
+API,
+{
+
+method:"POST",
+
+headers:{
+...headers(),
+"Prefer":"return=representation"
+},
+
+body:JSON.stringify(tour)
+
+}
+);
+
+}
+
+if(!response.ok){
+
+throw new Error(
+await response.text()
+);
+
+}
+
+return await response.json();
+
+}
+
+
+/* TOUR LÖSCHEN */
+
+async function deleteTour(id){
+
+let response=
+await fetch(
+API+"?id=eq."+
+encodeURIComponent(id),
+{
+
+method:"DELETE",
+
+headers:headers()
+
+}
+);
+
+if(!response.ok){
+
+throw new Error(
+await response.text()
+);
+
+}
+
+}
+
+
+/* GESPEICHERTE FOTOS ANZEIGEN */
+
+function showSavedPhotos(){
+
+let id=
+$("editId").value;
+
+let t=
+tours.find(
+x=>String(x.id)===String(id)
+);
+
+if(!id||!t){
+
+$("savedPhotos").innerHTML="";
+
+return;
+
+}
+
+let photos=
+Array.isArray(t.photos)
+?
+t.photos
+:
+[];
+
+let cover=
+t.cover||"";
+
+let html="";
+
+
+/* TITELBILD */
+
+if(cover){
+
+html+=`
+
+<label>Titelbild</label>
+
+<div class="saved-photo">
+
+<img
+src="${cover}"
+alt=""
+>
+
+<button
+type="button"
+class="delete-photo"
+onclick="removeCover()"
+title="Titelbild löschen"
+>
+×
+</button>
+
+</div>
+
+`;
+
+}
+
+
+/* WEITERE FOTOS */
+
+if(photos.length){
+
+html+=`
+
+<label>
+Weitere gespeicherte Fotos
+</label>
+
+<div class="gallery">
+
+${
+photos.map(
+(photo,index)=>`
+
+<div class="saved-photo">
+
+<img
+src="${photo}"
+alt=""
+>
+
+<button
+type="button"
+class="delete-photo"
+onclick="removeSavedPhoto(${index})"
+title="Foto löschen"
+>
+×
+</button>
+
+</div>
+
+`
+).join("")
+}
+
+</div>
+
+`;
+
+}
+
+
+if(!html){
+
+$("savedPhotos").innerHTML="";
+
+return;
+
+}
+
+$("savedPhotos").innerHTML=
+html;
+
+}
+
+
+/* EIN WEITERES FOTO LÖSCHEN */
+
+async function removeSavedPhoto(index){
+
+let id=
+$("editId").value;
+
+let t=
+tours.find(
+x=>String(x.id)===String(id)
+);
+
+if(
+!t||
+!Array.isArray(t.photos)||
+index<0||
+index>=t.photos.length
+){
+
+return;
+
+}
+
+if(
+!confirm(
+"Dieses Foto wirklich löschen?"
+)
+){
+
+return;
+
+}
+
+let photos=[
+...t.photos
+];
+
+photos.splice(
+index,
+1
+);
+
+try{
+
+setConnection(
+"☁️ Foto wird gelöscht..."
+);
+
+let response=
+await fetch(
+API+"?id=eq."+
+encodeURIComponent(id),
+{
+
+method:"PATCH",
+
+headers:{
+...headers(),
+"Prefer":"return=minimal"
+},
+
+body:
+JSON.stringify({
+photos:photos
+})
+
+}
+);
+
+if(!response.ok){
+
+throw new Error(
+await response.text()
+);
+
+}
+
+t.photos=
+photos;
+
+showSavedPhotos();
+
+setConnection(
+"☁️ Mit der Bergtouren-Datenbank verbunden"
+);
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Das Foto konnte nicht gelöscht werden.\n\n"+
+error.message
+);
+
+}
+
+}
+
+
+/* TITELBILD LÖSCHEN */
+
+async function removeCover(){
+
+let id=
+$("editId").value;
+
+let t=
+tours.find(
+x=>String(x.id)===String(id)
+);
+
+if(
+!t||
+!t.cover
+){
+
+return;
+
+}
+
+if(
+!confirm(
+"Titelbild wirklich löschen?"
+)
+){
+
+return;
+
+}
+
+try{
+
+setConnection(
+"☁️ Titelbild wird gelöscht..."
+);
+
+let response=
+await fetch(
+API+"?id=eq."+
+encodeURIComponent(id),
+{
+
+method:"PATCH",
+
+headers:{
+...headers(),
+"Prefer":"return=minimal"
+},
+
+body:
+JSON.stringify({
+cover:""
+})
+
+}
+);
+
+if(!response.ok){
+
+throw new Error(
+await response.text()
+);
+
+}
+
+t.cover="";
+
+showSavedPhotos();
+
+render();
+
+setConnection(
+"☁️ Mit der Bergtouren-Datenbank verbunden"
+);
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Das Titelbild konnte nicht gelöscht werden.\n\n"+
+error.message
+);
+
+}
+
+}
+
+
+/* MODAL ÖFFNEN */
+
+function openModal(id=null){
+
+$("modal").classList.add(
+"open"
+);
+
+$("form").reset();
+
+$("editId").value="";
+
+$("savedPhotos").innerHTML="";
+
+$("modalTitle").textContent=
+id?
+"Tour bearbeiten":
+"Neue Bergtour";
+
+
+if(id){
+
+let t=
+tours.find(
+x=>String(x.id)===String(id)
+);
+
+if(!t)return;
+
+$("editId").value=
+t.id;
+
+$("title").value=
+t.title||"";
+
+$("place").value=
+t.place||"";
+
+$("parking").value=
+t.parking||"";
+
+$("parkingLink").value=
+t.parking_link||"";
+
+$("drive").value=
+t.drive||"";
+
+$("elev").value=
+t.elev||0;
+
+$("totalElev").value=
+t.total_elev||0;
+
+$("time").value=
+t.tour_time||"";
+
+$("km").value=
+t.km||0;
+
+$("difficulty").value=
+t.difficulty||"mittel";
+
+$("oa").value=
+t.outdooractive||"";
+
+$("desc").value=
+t.description||"";
+
+$("status").value=
+t.status||"planned";
+
+$("date").value=
+t.tour_date||"";
+
+showSavedPhotos();
+
+}
+
+}
+
+
+/* MODAL SCHLIESSEN */
+
+function closeModal(){
+
+$("modal").classList.remove(
+"open"
+);
+
+$("form").reset();
+
+$("editId").value="";
+
+$("savedPhotos").innerHTML="";
+
+}
+
+
+/* DATEI LESEN */
+
+function readFile(file){
+
+return new Promise(
+resolve=>{
+
+if(!file){
+
+resolve("");
+
+return;
+
+}
+
+let reader=
+new FileReader();
+
+reader.onload=
+()=>
+resolve(
+reader.result
+);
+
+reader.onerror=
+()=>
+resolve("");
+
+reader.readAsDataURL(
+file
+);
+
+}
+);
+
+}
+
+
+/* FOTOS LESEN */
+
+async function readPhotos(){
+
+return Promise.all(
+
+[...$("photos").files].map(
+file=>readFile(file)
+)
+
+);
+
+}
+
+
+/* FORMULAR */
+
+$("form").onsubmit=
+async e=>{
+
+e.preventDefault();
+
+let button=
+e.submitter;
+
+button.disabled=true;
+
+button.textContent=
+"⏳ Speichern...";
+
+try{
+
+let id=
+$("editId").value;
+
+let old=
+id?
+tours.find(
+x=>String(x.id)===String(id)
+):
+null;
+
+
+/* TITELBILD */
+
+let cover=
+old?.cover||"";
+
+if(
+$("cover").files[0]
+){
+
+cover=
+await readFile(
+$("cover").files[0]
+);
+
+}
+
+
+/* BESTEHENDE FOTOS */
+
+let photos=
+old?.photos
+?
+[...old.photos]
+:
+[];
+
+
+/* NEUE FOTOS */
+
+if(
+$("photos").files.length
+){
+
+let newPhotos=
+await readPhotos();
+
+photos=[
+...photos,
+...newPhotos
+];
+
+}
+
+
+/* TOUR */
+
+let tour={
+
+title:
+$("title").value.trim(),
+
+cover:
+cover,
+
+place:
+$("place").value.trim(),
+
+parking:
+$("parking").value.trim(),
+
+parking_link:
+$("parkingLink").value.trim(),
+
+drive:
+$("drive").value.trim(),
+
+elev:
++$("elev").value||0,
+
+total_elev:
++$("totalElev").value||0,
+
+tour_time:
+$("time").value.trim(),
+
+km:
++$("km").value||0,
+
+difficulty:
+$("difficulty").value,
+
+description:
+$("desc").value.trim(),
+
+outdooractive:
+$("oa").value.trim(),
+
+status:
+$("status").value,
+
+tour_date:
+$("date").value||null,
+
+photos:
+photos
+
+};
+
+
+if(id){
+
+tour.id=id;
+
+}
+
+
+/* SPEICHERN */
+
+await saveTour(tour);
+
+await loadTours();
+
+closeModal();
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Die Tour konnte nicht gespeichert werden.\n\n"+
+error.message
+);
+
+}
+
+button.disabled=false;
+
+button.textContent=
+"💾 Tour speichern";
+
+};
+
+
+/* DETAILANSICHT */
+
+function openDetail(id){
+
+let t=
+tours.find(
+x=>String(x.id)===String(id)
+);
+
+if(!t)return;
+
+currentDetailId=
+t.id;
+
+let image=
+t.cover||
+t.photos?.[0]||
+"";
+
+let oa=
+safeUrl(
+t.outdooractive
+);
+
+let parkingLink=
+safeUrl(
+t.parking_link
+);
+
+
+/* ALLE BILDER */
+
+let allImages=[];
+
+if(t.cover){
+
+allImages.push(
+t.cover
+);
+
+}
+
+if(
+Array.isArray(t.photos)
+){
+
+allImages=[
+...allImages,
+...t.photos
+];
+
+}
+
+allImages=[
+...new Set(allImages)
+];
+
+
+/* DETAIL */
+
+$("detailContent").innerHTML=`
+
+${
+image?
+
+`<img
+class="detail-cover"
+src="${image}"
+alt="${esc(t.title)}"
+onclick="openImage('${image}')"
+>`
+
+:""
+}
+
+
+<div class="detail-title">
+
+🏔️ ${esc(t.title)}
+
+</div>
+
+
+<span class="badge">
+
+${
+t.status==="done"
+?
+"✅ Erledigt"
+:
+"🥾 Geplant"
+}
+
+</span>
+
+
+${
+t.place?
+
+`<div class="detail-section">
+
+<div class="meta">
+
+📍 <b>Ort:</b>
+
+${esc(t.place)}
+
+</div>
+
+</div>`
+
+:""
+}
+
+
+${
+t.parking||parkingLink?
+
+`<div class="detail-section">
+
+<b>🅿️ Parkplatz</b>
+
+${
+t.parking?
+
+`<div class="meta">
+
+${esc(t.parking)}
+
+</div>`
+
+:""
+}
+
+
+${
+parkingLink?
+
+`<button
+class="btn"
+onclick="openParking()"
+>
+
+🗺️ Google Maps öffnen
+
+</button>`
+
+:""
+}
+
+</div>`
+
+:""
+}
+
+
+<div class="detail-section">
+
+<div class="meta">
+
+🚗 <b>Fahrzeit:</b>
+
+${
+t.drive
+?
+esc(t.drive)
+:
+"nicht angegeben"
+}
+
+</div>
+
+
+<div class="meta">
+
+⬆️ <b>HM zum Gehen:</b>
+
+${t.elev||0} HM
+
+</div>
+
+
+<div class="meta">
+
+⛰️ <b>Gesamthöhenmeter:</b>
+
+${t.total_elev||0} HM
+
+</div>
+
+
+<div class="meta">
+
+🥾 <b>Gehzeit:</b>
+
+${
+t.tour_time
+?
+esc(t.tour_time)
+:
+"nicht angegeben"
+}
+
+</div>
+
+
+<div class="meta">
+
+📏 <b>Strecke:</b>
+
+${t.km||0} km
+
+</div>
+
+
+<div class="meta">
+
+⭐ <b>Schwierigkeit:</b>
+
+${esc(
+t.difficulty||
+"mittel"
+)}
+
+</div>
+
+</div>
+
+
+${
+t.description?
+
+`<div class="detail-section">
+
+<b>📝 Beschreibung</b>
+
+<p>
+
+${esc(t.description)}
+
+</p>
+
+</div>`
+
+:""
+}
+
+
+${
+t.tour_date?
+
+`<div class="meta">
+
+📅 <b>Begehungsdatum:</b>
+
+${
+new Date(
+t.tour_date+"T12:00:00"
+)
+.toLocaleDateString(
+"de-DE"
+)
+}
+
+</div>`
+
+:""
+}
+
+
+${
+oa?
+
+`<div class="detail-section">
+
+<a
+class="link"
+href="${oa}"
+target="_blank"
+rel="noopener"
+>
+
+🗺️ Outdooractive öffnen
+
+</a>
+
+</div>`
+
+:""
+}
+
+
+${
+allImages.length>1?
+
+`<div class="detail-section">
+
+<b>📷 Alle Fotos</b>
+
+<div class="gallery">
+
+${
+allImages.map(
+p=>`
+
+<img
+src="${p}"
+alt=""
+onclick="event.stopPropagation();openImage('${p}')"
+>
+
+`
+).join("")
+}
+
+</div>
+
+</div>`
+
+:""
+}
+
+
+<div class="detail-buttons">
+
+<button
+class="btn"
+onclick="shareTour()"
+>
+
+📤 Tour teilen
+
+</button>
+
+
+<button
+class="btn alt"
+onclick="editCurrentTour()"
+>
+
+✏️ Bearbeiten
+
+</button>
+
+
+<button
+class="btn alt"
+onclick="closeDetail()"
+>
+
+Schließen
+
+</button>
+
+</div>
+
+`;
+
+$("detailModal").classList.add(
+"open"
+);
+
+}
+
+
+/* DETAIL SCHLIESSEN */
+
+function closeDetail(){
+
+$("detailModal").classList.remove(
+"open"
+);
+
+currentDetailId=null;
+
+}
+
+
+/* AKTUELLE TOUR BEARBEITEN */
+
+function editCurrentTour(){
+
+if(
+currentDetailId===null
+)return;
+
+let id=
+currentDetailId;
+
+closeDetail();
+
+openModal(id);
+
+}
+
+
+/* PARKPLATZ */
+
+function openParking(){
+
+let t=
+tours.find(
+x=>String(x.id)===String(currentDetailId)
+);
+
+if(!t)return;
+
+let url=
+safeUrl(
+t.parking_link
+);
+
+if(!url)return;
+
+window.open(
+url,
+"_blank"
+);
+
+}
+
+
+/* BILD GROSS */
+
+function openImage(src){
+
+$("largeImage").src=
+src;
+
+$("imageModal").classList.add(
+"open"
+);
+
+}
+
+
+function closeImage(){
+
+$("imageModal").classList.remove(
+"open"
+);
+
+$("largeImage").src="";
+
+}
+
+
+/* BILDER FÜR TEILEN */
+
+function dataUrlToFile(
+dataUrl,
+filename
+){
+
+try{
+
+let parts=
+dataUrl.split(",");
+
+let mime=
+parts[0]
+.match(
+/:(.*?);/
+)[1];
+
+let binary=
+atob(parts[1]);
+
+let bytes=
+new Uint8Array(
+binary.length
+);
+
+for(
+let i=0;
+i<binary.length;
+i++
+){
+
+bytes[i]=
+binary.charCodeAt(i);
+
+}
+
+let extension=
+mime==="image/png"
+?
+"png"
+:
+mime==="image/webp"
+?
+"webp"
+:
+"jpg";
+
+return new File(
+[
+bytes
+],
+filename+"."+extension,
+{
+type:mime
+}
+);
+
+}catch(error){
+
+console.error(
+"Bild konnte nicht umgewandelt werden:",
+error
+);
+
+return null;
+
+}
+
+}
+
+
+/* TOUR TEILEN */
+
+async function shareTour(){
+
+let t=
+tours.find(
+x=>String(x.id)===String(currentDetailId)
+);
+
+if(!t)return;
+
+let text=
+"🏔️ "+
+(t.title||"Bergtour")+
+"\n\n";
+
+
+if(t.place)
+text+=
+"📍 Ort: "+
+t.place+
+"\n";
+
+
+if(t.parking)
+text+=
+"🅿️ Parkplatz: "+
+t.parking+
+"\n";
+
+
+if(t.parking_link)
+text+=
+"🗺️ Google Maps: "+
+t.parking_link+
+"\n";
+
+
+if(t.drive)
+text+=
+"🚗 Fahrzeit: "+
+t.drive+
+"\n";
+
+
+if(t.elev)
+text+=
+"⬆️ HM zum Gehen: "+
+t.elev+
+" HM\n";
+
+
+if(t.total_elev)
+text+=
+"⛰️ Gesamthöhenmeter: "+
+t.total_elev+
+" HM\n";
+
+
+if(t.tour_time)
+text+=
+"🥾 Gehzeit: "+
+t.tour_time+
+"\n";
+
+
+if(t.km)
+text+=
+"📏 Strecke: "+
+t.km+
+" km\n";
+
+
+if(t.difficulty)
+text+=
+"⭐ Schwierigkeit: "+
+t.difficulty+
+"\n";
+
+
+if(t.tour_date)
+text+=
+"📅 Begehungsdatum: "+
+new Date(
+t.tour_date+"T12:00:00"
+)
+.toLocaleDateString(
+"de-DE"
+)+
+"\n";
