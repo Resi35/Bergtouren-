@@ -114,7 +114,22 @@ setConnection("☁️ Touren werden geladen...");
 const response=await fetch(API+"?select=id,title,place,parking,parking_link,drive,elev,total_elev,tour_time,km,difficulty,description,outdooractive,status,tour_date&order=created_at.desc",{headers:headers()});
 if(!response.ok)throw new Error(await response.text());
 tours=await response.json();
-setConnection("☁️ Mit der Bergtouren-Datenbank verbunden");
+
+await Promise.all(tours.map(async tour=>{
+  try{
+    const photoResponse=await fetch(API+"?select=id,photos&id=eq."+encodeURIComponent(tour.id),{headers:headers()});
+    if(photoResponse.ok){
+      const photoData=await photoResponse.json();
+      tour.photos=photoData[0]?.photos||[];
+    }else{
+      tour.photos=[];
+    }
+  }catch(e){
+    tour.photos=[];
+  }
+}));
+
+setConnection("🟢 Mit der Bergtouren-Datenbank verbunden");
 render();
 }catch(error){
 console.error(error);
