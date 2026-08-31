@@ -138,13 +138,49 @@ $("list").innerHTML=`<div class="empty">Die Touren konnten nicht geladen werden.
 }}
 
 async function saveTour(tour){
-const response=await fetch(tour.id?API+"?id=eq."+encodeURIComponent(tour.id):API,{
-method:tour.id?"PATCH":"POST",
-headers:{...headers(),"Prefer":"return=representation"},
-body:JSON.stringify(tour)
-});
-if(!response.ok)throw new Error(await response.text());
-return await response.json();
+  const {photos,...tourData}=tour;
+
+  const response=await fetch(
+    tour.id
+      ? API+"?id=eq."+encodeURIComponent(tour.id)
+      : API,
+    {
+      method:tour.id?"PATCH":"POST",
+      headers:{...headers(),"Prefer":"return=representation"},
+      body:JSON.stringify(tourData)
+    }
+  );
+
+  if(!response.ok)throw new Error(await response.text());
+
+  const saved=await response.json();
+  const savedTour=Array.isArray(saved)?saved[0]:saved;
+  const tourId=savedTour?.id || tour.id;
+
+  if(!tourId)throw new Error("Tour-ID fehlt nach dem Speichern.");
+
+  if(Array.isArray(photos)){
+    const photoResponse=await fetch(
+      SUPABASE_URL+"/rest/v1/photos?on_conflict=id",
+      {
+        method:"POST",
+        headers:{
+          ...headers(),
+          "Prefer":"resolution=merge-duplicates,return=minimal"
+        },
+        body:JSON.stringify({
+          id:tourId,
+          photos:photos
+        })
+      }
+    );
+
+    if(!photoResponse.ok){
+      throw new Error(await photoResponse.text());
+    }
+  }
+
+  return saved;
 }
 
 async function deleteTour(id){
