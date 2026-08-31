@@ -111,7 +111,7 @@ function readFile(file){return new Promise(resolve=>{if(!file){resolve("");retur
 async function loadTours(){
 try{
 setConnection("☁️ Touren werden geladen...");
-const response=await fetch(API+"?select=*&order=created_at.desc",{headers:headers()});
+const response=await fetch(API+"?select=id,title,place,parking,parking_link,drive,elev,total_elev,tour_time,km,difficulty,description,outdooractive,status,tour_date,photos&order=created_at.desc",{headers:headers()});
 if(!response.ok)throw new Error(await response.text());
 tours=await response.json();
 setConnection("☁️ Mit der Bergtouren-Datenbank verbunden");
