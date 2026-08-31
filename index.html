@@ -165,23 +165,48 @@ async function compressImage(file){
     reader.readAsDataURL(file);
   });
 }
-     async function saveTour(tour){
-  const response=await fetch(
-    tour.id
-      ? API+"?id=eq."+encodeURIComponent(tour.id)
-      : API,
-    {
-      method:tour.id?"PATCH":"POST",
-      headers:{...headers(),"Prefer":"return=representation"},
-      body:JSON.stringify(tour)
-    }
-  );
+async function saveTour(tour){
+  const data={...tour};
+  delete data.cover;
+  delete data.photos;
+
+  const url=tour.id
+    ? API+"?id=eq."+encodeURIComponent(tour.id)
+    : API;
+
+  const response=await fetch(url,{
+    method:tour.id?"PATCH":"POST",
+    headers:{...headers(),"Prefer":"return=representation"},
+    body:JSON.stringify(data)
+  });
 
   if(!response.ok)throw new Error(await response.text());
 
-  return await response.json();
-}
+  const saved=await response.json();
+  const savedTour=Array.isArray(saved)?saved[0]:saved;
 
+  if(tour.cover||tour.photos){
+    const imageUrl=API+"?id=eq."+encodeURIComponent(
+      tour.id||savedTour.id
+    );
+
+    const imageResponse=await fetch(imageUrl,{
+      method:"PATCH",
+      headers:{...headers(),"Prefer":"return=representation"},
+      body:JSON.stringify({
+        cover:tour.cover||null,
+        photos:Array.isArray(tour.photos)?tour.photos:[]
+      })
+    });
+
+    if(!imageResponse.ok)throw new Error(await imageResponse.text());
+
+   const imageData=await imageResponse.json();
+return Array.isArray(imageData)?imageData[0]:imageData;
+  }
+
+  return savedTour;
+}   
   
 
 async function deleteTour(id){
