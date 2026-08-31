@@ -260,14 +260,35 @@ await saveTour(tour);closeModal();await loadTours();
 button.disabled=false;button.textContent="💾 Tour speichern";
 };
 
-function openDetail(id){
+async function openDetail(id){
 const t=tours.find(x=>String(x.id)===String(id));if(!t)return;
+
 currentDetailId=t.id;
+
+try{
+const photoResponse=await fetch(
+API+"?select=photos&id=eq."+encodeURIComponent(t.id),
+{headers:headers()}
+);
+
+if(photoResponse.ok){
+const photoData=await photoResponse.json();
+t.photos=photoData[0]?.photos||[];
+}else{
+t.photos=[];
+}
+}catch(e){
+console.error("Fotos konnten nicht geladen werden:",e);
+t.photos=[];
+}
+
 const image=t.cover||(Array.isArray(t.photos)&&t.photos[0])||"";
 const oa=safeUrl(t.outdooractive),parkingLink=safeUrl(t.parking_link);
-let allImages=[];if(t.cover)allImages.push(t.cover);if(Array.isArray(t.photos))allImages.push(...t.photos);
-allImages=[...new Set(allImages)];
 
+let allImages=[];
+if(t.cover)allImages.push(t.cover);
+if(Array.isArray(t.photos))allImages.push(...t.photos);
+allImages=[...new Set(allImages)];
 $("detailContent").innerHTML=`
 ${image?`<img class="detail-cover" src="${image}" alt="${esc(t.title)}" onclick="openImageByIndex(0)">`:""}
 <div class="detail-title">🏔️ ${esc(t.title)}</div>
