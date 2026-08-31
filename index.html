@@ -239,7 +239,7 @@ this.value="";renderPhotoEditor();
 
 $("cover").addEventListener("change",async function(){
 const file=this.files[0];if(!file)return;
-const data=await readFile(file);if(data){editCover=data;renderCoverEditor()}
+const data=await compressImage(file);if(data){editCover=data;renderCoverEditor()}
 });
 
 $("form").onsubmit=async function(e){
