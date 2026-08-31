@@ -233,7 +233,7 @@ editPhotos.splice(index,1);renderPhotoEditor();
 
 $("photos").addEventListener("change",async function(){
 if(!this.files.length)return;
-for(const file of [...this.files]){const data=await readFile(file);if(data)editPhotos.push(data)}
+for(const file of [...this.files]){const data=await compressImage(file) ;if(data)editPhotos.push(data)}
 this.value="";renderPhotoEditor();
 });
 
