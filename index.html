@@ -111,23 +111,11 @@ function readFile(file){return new Promise(resolve=>{if(!file){resolve("");retur
 async function loadTours(){
 try{
 setConnection("☁️ Touren werden geladen...");
-const response=await fetch(API+"?select=id,title,place,parking,parking_link,drive,elev,total_elev,tour_time,km,difficulty,description,outdooractive,status,tour_date&order=created_at.desc",{headers:headers()});
+const response=await fetch(API+"?select=id,title,place,parking,parking_link,drive,elev,total_elev,tour_time,km,difficulty,description,outdooractive,status,tour_date,photos&order=created_at.desc",{headers:headers()});
 if(!response.ok)throw new Error(await response.text());
 tours=await response.json();
 
-await Promise.all(tours.map(async tour=>{
-  try{
-    const photoResponse=await fetch(API+"?select=id,photos&id=eq."+encodeURIComponent(tour.id),{headers:headers()});
-    if(photoResponse.ok){
-      const photoData=await photoResponse.json();
-      tour.photos=photoData[0]?.photos||[];
-    }else{
-      tour.photos=[];
-    }
-  }catch(e){
-    tour.photos=[];
-  }
-}));
+
 
 setConnection("🟢 Mit der Bergtouren-Datenbank verbunden");
 render();
@@ -137,9 +125,47 @@ setConnection("❌ Verbindung zur Datenbank fehlgeschlagen",false);
 $("list").innerHTML=`<div class="empty">Die Touren konnten nicht geladen werden.<br><br>${esc(error.message)}</div>`;
 }}
 
-async function saveTour(tour){
-  const {photos,...tourData}=tour;
+async function compressImage(file){
+  return new Promise((resolve)=>{
+    const reader=new FileReader();
 
+    reader.onload=()=>{
+      const img=new Image();
+
+      img.onload=()=>{
+        const maxSize=1200;
+        let width=img.width;
+        let height=img.height;
+
+        if(width>maxSize || height>maxSize){
+          if(width>height){
+            height=Math.round(height*maxSize/width);
+            width=maxSize;
+          }else{
+            width=Math.round(width*maxSize/height);
+            height=maxSize;
+          }
+        }
+
+        const canvas=document.createElement("canvas");
+        canvas.width=width;
+        canvas.height=height;
+
+        const ctx=canvas.getContext("2d");
+        ctx.drawImage(img,0,0,width,height);
+
+        resolve(canvas.toDataURL("image/jpeg",0.65));
+      };
+
+      img.onerror=()=>resolve(null);
+      img.src=reader.result;
+    };
+
+    reader.onerror=()=>resolve(null);
+    reader.readAsDataURL(file);
+  });
+}
+     async function saveTour(tour){
   const response=await fetch(
     tour.id
       ? API+"?id=eq."+encodeURIComponent(tour.id)
@@ -147,41 +173,16 @@ async function saveTour(tour){
     {
       method:tour.id?"PATCH":"POST",
       headers:{...headers(),"Prefer":"return=representation"},
-      body:JSON.stringify(tourData)
+      body:JSON.stringify(tour)
     }
   );
 
   if(!response.ok)throw new Error(await response.text());
 
-  const saved=await response.json();
-  const savedTour=Array.isArray(saved)?saved[0]:saved;
-  const tourId=savedTour?.id || tour.id;
-
-  if(!tourId)throw new Error("Tour-ID fehlt nach dem Speichern.");
-
-  if(Array.isArray(photos)){
-    const photoResponse=await fetch(
-      SUPABASE_URL+"/rest/v1/photos?on_conflict=id",
-      {
-        method:"POST",
-        headers:{
-          ...headers(),
-          "Prefer":"resolution=merge-duplicates,return=minimal"
-        },
-        body:JSON.stringify({
-          id:tourId,
-          photos:photos
-        })
-      }
-    );
-
-    if(!photoResponse.ok){
-      throw new Error(await photoResponse.text());
-    }
-  }
-
-  return saved;
+  return await response.json();
 }
+
+  
 
 async function deleteTour(id){
 const response=await fetch(API+"?id=eq."+encodeURIComponent(id),{method:"DELETE",headers:{...headers(),"Prefer":"return=minimal"}});
