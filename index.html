@@ -189,7 +189,17 @@ async function shareTour(){
 function openTourFromCard(e){if(e.target.closest("button")||e.target.closest("a"))return;const id=e.currentTarget.getAttribute("data-id");if(id)openDetail(id)}
 function render(){$("planned").textContent=tours.filter(t=>t.status==="planned").length;$(
 "done").length;$("hm").textContent=tours.reduce((s,t)=>s+(Number(t.elev)||0),0).toLocaleString("de-DE");const arr=tours.filter(t=>filter==="all"||t.status===filter);if(!arr.length){$("list").innerHTML='<div class="empty">Noch keine Touren gespeichert.<br>Füge deine erste Tour hinzu! 🏔️</div>';return}$("list").innerHTML=arr.map(t=>{const id=esc(String(t.id));return `<article class="card" data-id="${id}" onclick="openTourFromCard(event)">${t.cover?`<img class="card-cover" src="${t.cover}" alt="${esc(t.title)}">`:""}<span class="badge">${t.status==="done"?"✅ Erledigt":"🥾 Geplant"}</span><h3>${esc(t.title)}</h3>${t.place?`<div class="meta">📍 ${esc(t.place)}</div>`:""}${t.parking?`<div class="meta">🅿️ ${esc(t.parking)}</div>`:""}<div class="info"><div class="meta">🚗 <b>Fahrzeit:</b> ${t.drive?esc(t.drive):"nicht angegeben"}</div><div class="meta">⬆️ <b>HM zum Gehen:</b> ${t.elev||0} HM</div><div class="meta">⛰️ <b>Gesamthöhenmeter:</b> ${t.total_elev||0} HM</div><div class="meta">🥾 <b>Gehzeit:</b> ${t.tour_time?esc(t.tour_time):"nicht angegeben"}</div><div class="meta">📏 <b>Strecke:</b> ${t.km||0} km</div><div class="meta">⭐ <b>Schwierigkeit:</b> ${esc(t.difficulty||"mittel")}</div></div><p>${esc(t.description||"Keine Beschreibung")}</p><div class="toolbar"><button class="btn" onclick="event.stopPropagation();toggle('${id}')">${t.status==="done"?"↩ Wieder planen":"✅ Als gegangen markieren"}</button><button class="btn alt" onclick="event.stopPropagation();openModal('${id}')">✏️ Bearbeiten</button><button class="btn red" onclick="event.stopPropagation();removeTour('${id}')">🗑️ Löschen</button></div></article>`}).join("")}
-loadTours();
+async function startApp(){
+  await loadTours();
+
+  const tourId=new URLSearchParams(window.location.search).get("tour");
+
+  if(tourId){
+    openDetail(tourId);
+  }
+}
+
+startApp();
 </script>
 </body>
 </html>
