@@ -137,7 +137,41 @@ async function openImageByIndex(i){try{const t=await loadTourFull(currentDetailI
 function closeImage(){$("imageModal").classList.remove("open");$("largeImage").src=""}
 async function toggle(id){const t=tours.find(x=>String(x.id)===String(id));if(!t)return;const ns=t.status==="done"?"planned":"done";try{setConnection("☁️ Änderung wird gespeichert...");const r=await fetch(API+"?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:{...headers(),"Prefer":"return=minimal"},body:JSON.stringify({status:ns,tour_date:ns==="done"?(t.tour_date||new Date().toISOString().slice(0,10)):null})});if(!r.ok)throw new Error(await r.text());await loadTours()}catch(e){console.error(e);alert("Änderung konnte nicht gespeichert werden.\n\n"+e.message)}}
 async function removeTour(id){if(!confirm("Tour wirklich löschen?"))return;try{setConnection("☁️ Tour wird gelöscht...");await deleteTour(id);await loadTours()}catch(e){console.error(e);alert("Tour konnte nicht gelöscht werden.\n\n"+e.message)}}
-async function shareTour(){try{const t=await loadTourFull(currentDetailId);let text="🏔️ "+(t.title||"Bergtour")+"\n\n";if(t.place)text+="📍 Ort: "+t.place+"\n";if(t.parking)text+="🅿️ Parkplatz: "+t.parking+"\n";if(t.parking_link)text+="🗺️ Google Maps: "+t.parking_link+"\n";if(t.drive)text+="🚗 Fahrzeit: "+t.drive+"\n";if(t.elev)text+="⬆️ HM zum Gehen: "+t.elev+" HM\n";if(t.total_elev)text+="⛰️ Gesamthöhenmeter: "+t.total_elev+" HM\n";if(t.tour_time)text+="🥾 Gehzeit: "+t.tour_time+"\n";if(t.km)text+="📏 Strecke: "+t.km+" km\n";if(t.difficulty)text+="⭐ Schwierigkeit: "+t.difficulty+"\n";if(t.tour_date)text+="📅 Begehungsdatum: "+new Date(t.tour_date+"T12:00:00").toLocaleDateString("de-DE")+"\n";if(t.description)text+="\n📝 "+t.description+"\n";if(t.outdooractive)text+="\n🗺️ Outdooractive: "+t.outdooractive;if(navigator.share)return await navigator.share({title:t.title||"Meine Bergtour",text});if(navigator.clipboard){await navigator.clipboard.writeText(text);alert("Die Tourdaten wurden in die Zwischenablage kopiert.")}}catch(e){if(e.name!=="AbortError")console.error(e)}}
+async function shareTour(){
+  try{
+    const t=await loadTourFull(currentDetailId);
+
+    const tourUrl="https://open-cat-ec02bd.netlify.app/?tour="+encodeURIComponent(t.id);
+
+    let text="🏔️ "+(t.title||"Bergtour")+"\n\n";
+
+    if(t.place)text+="📍 Ort: "+t.place+"\n";
+    if(t.parking)text+="🅿️ Parkplatz: "+t.parking+"\n";
+    if(t.drive)text+="🚗 Fahrzeit: "+t.drive+"\n";
+    if(t.elev)text+="⬆️ HM zum Gehen: "+t.elev+" HM\n";
+    if(t.total_elev)text+="⛰️ Gesamthöhenmeter: "+t.total_elev+" HM\n";
+    if(t.tour_time)text+="🥾 Gehzeit: "+t.tour_time+"\n";
+    if(t.km)text+="📏 Strecke: "+t.km+" km\n";
+    if(t.difficulty)text+="⭐ Schwierigkeit: "+t.difficulty+"\n";
+
+    text+="\n🔗 "+tourUrl;
+
+    if(navigator.share){
+      await navigator.share({
+        title:t.title||"Bergtour",
+        text:text,
+        url:tourUrl
+      });
+    }else{
+      await navigator.clipboard.writeText(text);
+      alert("Tour-Link wurde kopiert.");
+    }
+
+  }catch(e){
+    console.error(e);
+    alert("Die Tour konnte nicht geteilt werden.\n\n"+e.message);
+  }
+}
 function openTourFromCard(e){if(e.target.closest("button")||e.target.closest("a"))return;const id=e.currentTarget.getAttribute("data-id");if(id)openDetail(id)}
 function render(){$("planned").textContent=tours.filter(t=>t.status==="planned").length;$(
 "done").length;$("hm").textContent=tours.reduce((s,t)=>s+(Number(t.elev)||0),0).toLocaleString("de-DE");const arr=tours.filter(t=>filter==="all"||t.status===filter);if(!arr.length){$("list").innerHTML='<div class="empty">Noch keine Touren gespeichert.<br>Füge deine erste Tour hinzu! 🏔️</div>';return}$("list").innerHTML=arr.map(t=>{const id=esc(String(t.id));return `<article class="card" data-id="${id}" onclick="openTourFromCard(event)">${t.cover?`<img class="card-cover" src="${t.cover}" alt="${esc(t.title)}">`:""}<span class="badge">${t.status==="done"?"✅ Erledigt":"🥾 Geplant"}</span><h3>${esc(t.title)}</h3>${t.place?`<div class="meta">📍 ${esc(t.place)}</div>`:""}${t.parking?`<div class="meta">🅿️ ${esc(t.parking)}</div>`:""}<div class="info"><div class="meta">🚗 <b>Fahrzeit:</b> ${t.drive?esc(t.drive):"nicht angegeben"}</div><div class="meta">⬆️ <b>HM zum Gehen:</b> ${t.elev||0} HM</div><div class="meta">⛰️ <b>Gesamthöhenmeter:</b> ${t.total_elev||0} HM</div><div class="meta">🥾 <b>Gehzeit:</b> ${t.tour_time?esc(t.tour_time):"nicht angegeben"}</div><div class="meta">📏 <b>Strecke:</b> ${t.km||0} km</div><div class="meta">⭐ <b>Schwierigkeit:</b> ${esc(t.difficulty||"mittel")}</div></div><p>${esc(t.description||"Keine Beschreibung")}</p><div class="toolbar"><button class="btn" onclick="event.stopPropagation();toggle('${id}')">${t.status==="done"?"↩ Wieder planen":"✅ Als gegangen markieren"}</button><button class="btn alt" onclick="event.stopPropagation();openModal('${id}')">✏️ Bearbeiten</button><button class="btn red" onclick="event.stopPropagation();removeTour('${id}')">🗑️ Löschen</button></div></article>`}).join("")}
